@@ -1,28 +1,28 @@
-﻿# ADE.UA DevHub Platform
+# ADE.UA DevHub Platform
 **Agentic Development Ecosystem** — Built with IBM Bob 2.0
 
-10 integrated developer workflow modules · FastAPI + SQLite · 71 tests · Grade A health score
+10 integrated developer workflow modules · FastAPI + SQLite · 71 tests · 0 warnings · Grade A health score
 
 ---
 
 ## Quick Start
 
 ```powershell
-# Install (once)
+# Terminal 1 — install dependencies (once)
 cd C:\Users\Admin\Documents\dev-hub\dev-hub
 & "C:\Users\Admin\AppData\Local\Programs\Python\Python312\python.exe" -m pip install -r requirements.txt
 
-# Start server (keep this terminal open)
+# Terminal 1 — start server (keep this terminal open)
 & "C:\Users\Admin\AppData\Local\Programs\Python\Python312\python.exe" -m uvicorn backend.main:app --reload --port 8000
 
-# Seed sample data (second terminal, server must be running)
+# Terminal 2 — seed sample data (server must be running first)
 & "C:\Users\Admin\AppData\Local\Programs\Python\Python312\python.exe" seed_data.py
 
-# Run tests
+# Terminal 2 — run full test suite
 & "C:\Users\Admin\AppData\Local\Programs\Python\Python312\python.exe" -m pytest tests/ -v
 ```
 
-**Server start time: ~3 s · Seed time: ~2 s · 71 tests in ~4.8 s (measured)**
+**Server start: ~3 s · Seed: ~2 s · 71 tests in ~2 s · 0 failures · 0 warnings**
 
 ---
 
@@ -76,12 +76,14 @@ Every developer workflow — from first day onboarding to production deploy — 
 - **Sidebar live widget** on the home page showing grade + dimension bars
 
 ### Built with IBM Bob 2.0 — Agentic Development in Practice
-- **Agent mode** wrote all 10 routers, 10 schemas, 6 models, 2 services, 12 frontend pages, 11 test files
-- **Parallel tool calls** generated all schema files in one batch — ~4x faster than sequential
-- **Subagents** explored codebase relationships while main agent continued writing code
-- **Code review** found and fixed 9 bugs in a single pass
-- **Document understanding** enforced .bobignore/.gitignore security constraints across all modules
-- **Context recovery** after reset: full workspace scan, test run, continued from exact point
+- **Agent mode** wrote all 10 routers, 10 schemas, 6 models, 2 services, 12 frontend pages, 11 test files — zero manual code
+- **Parallel tool calls** generated all 10 schema files in one batch — ~4x faster than sequential
+- **Subagents** explored codebase symbol relationships while main agent continued writing code
+- **Code review** found and fixed 9 bugs in a single pass (wrong HTTP codes, nullable mismatches, broken fixtures)
+- **Document understanding** enforced .bobignore/.gitignore security constraints across all generated files
+- **Context recovery** after reset: full workspace scan, ran tests, continued from exact point — no work lost
+- **Bug detection** identified and repaired HTML corruption across all 11 frontend pages (5,669 corrupt lines removed)
+- **Todo tracking** `update_todo_list` used at every step across 40+ sub-tasks — nothing dropped
 
 ---
 
@@ -105,7 +107,7 @@ Every developer workflow — from first day onboarding to production deploy — 
 | Full export (entire platform) | 37 ms | 32 ms |
 
 ### Test Suite Performance
-- **71 tests across 11 modules** — average **4.84 s** (3 measured runs: 5.66 s, 4.48 s, 4.37 s)
+- **71 tests across 11 modules** — average **~2 s** after dep upgrade (measured: 2.30 s, 2.48 s, 2.54 s)
 - **0 failures · 0 warnings · 0 secrets committed**
 
 ### Before vs After — Key Workflows
@@ -159,8 +161,41 @@ dev-hub/
     static/           style.css, app.js, api-client.js
   tests/              11 test files, 71 tests, conftest.py
   seed_data.py        Populates all 10 modules with realistic data
-  requirements.txt    fastapi, uvicorn, sqlalchemy, httpx, pytest
+  requirements.txt    pinned deps — all at current safe versions
+  pytest.ini          asyncio loop scope config (0 warnings)
 ```
+
+---
+
+## Dependencies
+
+| Package | Version | Notes |
+|---------|---------|-------|
+| fastapi | 0.115.14 | Latest stable |
+| uvicorn[standard] | 0.34.3 | Latest stable |
+| sqlalchemy | 2.0.52 | Latest stable |
+| python-multipart | 0.0.32 | Latest stable |
+| httpx | 0.28.1 | Latest stable |
+| pytest | 8.3.5 | Test runner |
+| pytest-asyncio | 0.24.0 | Async test support |
+
+All Dependabot vulnerability alerts resolved in this version.
+
+---
+
+## Git History
+
+| Commit | Description |
+|--------|-------------|
+| `f43130a` | Initial commit — full platform |
+| `e1cdd32` | SVG icons on all pages, fix .gitignore + .bobignore |
+| `cfce305` | Grade A pulse, UI overhaul, issue resolve endpoint |
+| `0f87233` | README with measured timings |
+| `5a13c15` | ApiClient pulse fix, scarlet/teal/ochre/violet palette |
+| `6a5bde9` | Splash screen cleanup |
+| `8b8eb88` | Fix: restore 11 pages corrupted by duplicate-content write (5,669 lines removed) |
+| `9fa5c28` | Fix: repair broken Pipeline + Dashboard cards on home page |
+| `5f044ed` | Chore: bump all deps to latest safe versions, add pytest.ini |
 
 ---
 
