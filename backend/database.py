@@ -1,4 +1,4 @@
-﻿"""
+"""
 database.py — SQLAlchemy engine, declarative base, session factory, and table creation.
 
 The DB file is stored at backend/data/devhub.db.
