@@ -87,3 +87,14 @@ def get_report(report_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Report not found")
     issues = db.query(DebuggingIssue).filter(DebuggingIssue.report_id == report_id).all()
     return _to_response(report, issues)
+
+
+@router.patch("/issues/{issue_id}/resolve", status_code=200)
+def resolve_issue(issue_id: int, db: Session = Depends(get_db)):
+    """Mark a debugging issue as resolved."""
+    issue = db.query(DebuggingIssue).filter(DebuggingIssue.id == issue_id).first()
+    if not issue:
+        raise HTTPException(status_code=404, detail="Issue not found")
+    issue.status = "resolved"
+    db.commit()
+    return {"id": issue_id, "status": "resolved"}

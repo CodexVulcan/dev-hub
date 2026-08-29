@@ -50,21 +50,28 @@ def _pipeline_score(db: Session) -> tuple[float, str]:
 
 
 def _quality_score(db: Session) -> tuple[float, str]:
-    """25 pts: penalise for open critical issues and critical test failures."""
+    """25 pts: penalise for open critical issues and critical test failures in latest runs."""
+    from backend.models.testing import TestRun
     open_critical = db.query(DebuggingIssue).filter(
         DebuggingIssue.severity == "critical",
         DebuggingIssue.status == "open"
     ).count()
-    critical_failures = db.query(TestResult).filter(
-        TestResult.severity == "critical",
-        TestResult.status.in_(["failed", "error"])
-    ).count()
+    # Only look at the 3 most recent test runs to avoid penalising for fixed historical failures
+    recent_run_ids = [
+        r.id for r in db.query(TestRun).order_by(TestRun.created_at.desc()).limit(3).all()
+    ]
+    critical_failures = 0
+    if recent_run_ids:
+        critical_failures = db.query(TestResult).filter(
+            TestResult.run_id.in_(recent_run_ids),
+            TestResult.severity == "critical",
+            TestResult.status.in_(["failed", "error"])
+        ).count()
     total_penalties = open_critical + critical_failures
     if total_penalties == 0:
         return 100.0, "No critical issues or failing tests"
-    # Each critical item costs 20 points, floor at 0
     score = max(0.0, 100.0 - total_penalties * 20)
-    detail = f"{open_critical} open critical debug issues, {critical_failures} critical test failures"
+    detail = f"{open_critical} open critical debug issues, {critical_failures} critical test failures (recent runs)"
     return score, detail
 
 
