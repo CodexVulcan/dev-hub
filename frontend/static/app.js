@@ -1,12 +1,12 @@
-/**
- * app.js — DevHub shared frontend utilities
+ï»¿/**
+ * app.js Ã¹ DevHub shared frontend utilities
  * Provides: apiFetch, toast notifications, active nav link highlighting.
  */
 
-const API_BASE = "";   // same-origin — FastAPI serves everything on :8000
+const API_BASE = "";   // same-origin Ã¹ FastAPI serves everything on :8000
 
 /**
- * apiFetch — thin wrapper around fetch() that:
+ * apiFetch Ã¹ thin wrapper around fetch() that:
  *   - Prepends API_BASE to path
  *   - Sets JSON Content-Type on POST/PATCH/PUT
  *   - Throws on non-2xx responses (includes parsed error detail)
@@ -52,7 +52,7 @@ function _getContainer() {
 }
 
 /**
- * toast — show a brief notification.
+ * toast Ã¹ show a brief notification.
  * @param {string} message
  * @param {"success"|"error"|"info"} [type="info"]
  * @param {number} [duration=3000]
