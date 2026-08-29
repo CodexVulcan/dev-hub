@@ -1,0 +1,149 @@
+{
+  "nodes": [
+    {
+      "id": "root",
+      "label": "DevHub Platform",
+      "type": "component",
+      "x": 400.0,
+      "y": 60.0
+    },
+    {
+      "id": "backend",
+      "label": "FastAPI Backend",
+      "type": "component",
+      "x": 180.0,
+      "y": 180.0
+    },
+    {
+      "id": "frontend",
+      "label": "HTML/CSS/JS UI",
+      "type": "component",
+      "x": 620.0,
+      "y": 180.0
+    },
+    {
+      "id": "db",
+      "label": "SQLite DB",
+      "type": "component",
+      "x": 80.0,
+      "y": 320.0
+    },
+    {
+      "id": "routers",
+      "label": "11 Routers",
+      "type": "component",
+      "x": 280.0,
+      "y": 320.0
+    },
+    {
+      "id": "pages",
+      "label": "11 Pages",
+      "type": "component",
+      "x": 520.0,
+      "y": 320.0
+    },
+    {
+      "id": "pulse",
+      "label": "Team Pulse",
+      "type": "component",
+      "x": 720.0,
+      "y": 320.0
+    },
+    {
+      "id": "tests",
+      "label": "71 Tests",
+      "type": "component",
+      "x": 180.0,
+      "y": 460.0
+    },
+    {
+      "id": "schemas",
+      "label": "Pydantic Schemas",
+      "type": "component",
+      "x": 380.0,
+      "y": 460.0
+    }
+  ],
+  "edges": [
+    {
+      "source": "root",
+      "target": "backend",
+      "label": ""
+    },
+    {
+      "source": "root",
+      "target": "frontend",
+      "label": ""
+    },
+    {
+      "source": "backend",
+      "target": "db",
+      "label": ""
+    },
+    {
+      "source": "backend",
+      "target": "routers",
+      "label": ""
+    },
+    {
+      "source": "frontend",
+      "target": "pages",
+      "label": ""
+    },
+    {
+      "source": "frontend",
+      "target": "pulse",
+      "label": ""
+    },
+    {
+      "source": "routers",
+      "target": "tests",
+      "label": ""
+    },
+    {
+      "source": "routers",
+      "target": "schemas",
+      "label": ""
+    },
+    {
+      "source": "root",
+      "target": "backend",
+      "label": ""
+    },
+    {
+      "source": "root",
+      "target": "frontend",
+      "label": ""
+    },
+    {
+      "source": "backend",
+      "target": "db",
+      "label": ""
+    },
+    {
+      "source": "backend",
+      "target": "routers",
+      "label": ""
+    },
+    {
+      "source": "frontend",
+      "target": "pages",
+      "label": ""
+    },
+    {
+      "source": "frontend",
+      "target": "pulse",
+      "label": ""
+    },
+    {
+      "source": "routers",
+      "target": "tests",
+      "label": ""
+    },
+    {
+      "source": "routers",
+      "target": "schemas",
+      "label": ""
+    }
+  ]
+}

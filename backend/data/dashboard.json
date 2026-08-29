@@ -1,0 +1,170 @@
+{
+  "cards": [
+    {
+      "id": "e6739a2d-d2a6-4835-be14-0c2628535eea",
+      "title": "Launch Checklist",
+      "body": "Splash page done  All 71 tests pass  Live server up  Seed data loaded",
+      "color": "#d1fae5",
+      "x": 40.0,
+      "y": 40.0,
+      "author": "Utkarsh",
+      "comments": [
+        {
+          "id": "a8df21ac-1d0b-4e18-8260-cd37e3f9a76d",
+          "text": "Deployment check is green!",
+          "author": "Aman",
+          "created_at": "2026-08-29T06:02:46.010659+00:00"
+        }
+      ],
+      "created_at": "2026-08-29T06:02:45.995034+00:00"
+    },
+    {
+      "id": "c661c550-c3ac-497b-8acc-b2074890c1a5",
+      "title": "Idea: Dark/Light Toggle",
+      "body": "Add a theme switch to the sidebar so users can switch to light mode.",
+      "color": "#fef3c7",
+      "x": 340.0,
+      "y": 40.0,
+      "author": "Priya",
+      "comments": [
+        {
+          "id": "1cd5555f-d020-4c9e-ba14-3de103cd1713",
+          "text": "CSS variables make this trivial",
+          "author": "Ravi",
+          "created_at": "2026-08-29T06:02:46.057927+00:00"
+        }
+      ],
+      "created_at": "2026-08-29T06:02:46.042296+00:00"
+    },
+    {
+      "id": "53dd8784-61c0-47a2-b4de-90bd4b394401",
+      "title": "Bug: Pipeline timeout",
+      "body": "GitHub Actions sync times out on large repos. Paginate or increase timeout.",
+      "color": "#fee2e2",
+      "x": 640.0,
+      "y": 40.0,
+      "author": "Sara",
+      "comments": [
+        {
+          "id": "9e37eb49-6413-4efa-b566-f1cea5cfd4f1",
+          "text": "Set httpx timeout=30",
+          "author": "Aman",
+          "created_at": "2026-08-29T06:02:46.089571+00:00"
+        }
+      ],
+      "created_at": "2026-08-29T06:02:46.085059+00:00"
+    },
+    {
+      "id": "b1ad4850-3da7-42e9-8457-dd17161e0acc",
+      "title": "Roadmap Q3",
+      "body": "1. OAuth login  2. PDF export  3. Slack notifications  4. Multi-team workspaces",
+      "color": "#ede9fe",
+      "x": 40.0,
+      "y": 320.0,
+      "author": "Aman",
+      "comments": [],
+      "created_at": "2026-08-29T06:02:46.105201+00:00"
+    },
+    {
+      "id": "c988803a-57e3-4098-b5a1-07eec486aee9",
+      "title": "Code Review Guidelines",
+      "body": "Max PR 400 lines. 1 reviewer + green CI. Use conventional commits.",
+      "color": "#e0f2fe",
+      "x": 340.0,
+      "y": 320.0,
+      "author": "Ravi",
+      "comments": [
+        {
+          "id": "be609260-8545-4754-9742-33350fd3d5fa",
+          "text": "Add to CONTRIBUTING.md",
+          "author": "Priya",
+          "created_at": "2026-08-29T06:02:46.152074+00:00"
+        }
+      ],
+      "created_at": "2026-08-29T06:02:46.136450+00:00"
+    },
+    {
+      "id": "95e974a9-752c-40a1-a3ee-8bd8ecf63889",
+      "title": "Launch Checklist",
+      "body": "Splash done. 71 tests pass. Server live. Seed loaded.",
+      "color": "#d1fae5",
+      "x": 40.0,
+      "y": 40.0,
+      "author": "Utkarsh",
+      "comments": [
+        {
+          "id": "5052b7da-9420-44ae-92f5-7f098b3ecee4",
+          "text": "Deployment check is green!",
+          "author": "Aman",
+          "created_at": "2026-08-29T06:04:18.641233+00:00"
+        }
+      ],
+      "created_at": "2026-08-29T06:04:18.609978+00:00"
+    },
+    {
+      "id": "2c3fa15b-58c1-4789-8523-0bb3cbbbf0d5",
+      "title": "Idea: Dark/Light Toggle",
+      "body": "Add theme switch in sidebar. CSS variables make this easy.",
+      "color": "#fef3c7",
+      "x": 340.0,
+      "y": 40.0,
+      "author": "Priya",
+      "comments": [
+        {
+          "id": "61c9a8aa-5aa1-4e48-827e-ce9b6253edd1",
+          "text": "CSS variables make this trivial",
+          "author": "Ravi",
+          "created_at": "2026-08-29T06:04:18.672499+00:00"
+        }
+      ],
+      "created_at": "2026-08-29T06:04:18.656849+00:00"
+    },
+    {
+      "id": "80a1ebb0-3d45-447f-890b-d375470b1782",
+      "title": "Bug: Pipeline timeout",
+      "body": "GitHub Actions sync times out on large repos. Paginate.",
+      "color": "#fee2e2",
+      "x": 640.0,
+      "y": 40.0,
+      "author": "Sara",
+      "comments": [
+        {
+          "id": "1eb41a42-7fa0-41c0-a129-cd3b3ada12c2",
+          "text": "Set httpx timeout=30",
+          "author": "Aman",
+          "created_at": "2026-08-29T06:04:18.719343+00:00"
+        }
+      ],
+      "created_at": "2026-08-29T06:04:18.688101+00:00"
+    },
+    {
+      "id": "8f5f8839-d2ea-40c5-a775-16b3db94ad7d",
+      "title": "Roadmap Q3",
+      "body": "1.OAuth login  2.PDF export  3.Slack  4.Multi-team spaces",
+      "color": "#ede9fe",
+      "x": 40.0,
+      "y": 320.0,
+      "author": "Aman",
+      "comments": [],
+      "created_at": "2026-08-29T06:04:18.734971+00:00"
+    },
+    {
+      "id": "3e406aac-0c2c-41db-97bb-94a030b8750a",
+      "title": "Code Review Guidelines",
+      "body": "Max PR 400 lines. 1 reviewer + green CI. Conventional commits.",
+      "color": "#e0f2fe",
+      "x": 340.0,
+      "y": 320.0,
+      "author": "Ravi",
+      "comments": [
+        {
+          "id": "49e4e0e3-7caa-4cba-aa9c-e823172920dc",
+          "text": "Add to CONTRIBUTING.md",
+          "author": "Priya",
+          "created_at": "2026-08-29T06:04:18.781841+00:00"
+        }
+      ],
+      "created_at": "2026-08-29T06:04:18.750588+00:00"
+    }
+  ]
+}

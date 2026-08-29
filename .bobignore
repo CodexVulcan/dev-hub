@@ -1,0 +1,9 @@
+﻿# Bob must never read, expose, or generate code referencing these paths
+.env
+*.key
+*.pem
+secrets/
+config/credentials.json
+*.db
+*.sqlite
+*.sqlite3

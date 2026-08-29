@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debugging - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .issue-row { display:grid; grid-template-columns:120px 1fr; gap:8px; margin-bottom:8px; align-items:start; }
+    .sev-critical { border-left:3px solid var(--danger); }
+    .sev-major    { border-left:3px solid var(--warning); }
+    .sev-minor    { border-left:3px solid var(--info); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link active" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Debugging Report</div>
+        <div class="page-sub">Severity-sorted issues with rule-based fix suggestions.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex justify-between items-center" style="margin-bottom:12px">
+        <div class="card-title" style="margin:0">New Report</div>
+        <button class="btn btn-ghost btn-sm" onclick="addIssueRow()">+ Add Issue</button>
+      </div>
+      <div class="form-group"><label class="form-label">Report Title</label><input id="r-title" class="form-input" placeholder="Sprint 12 Issues" /></div>
+      <div id="issues-container"></div>
+      <button class="btn btn-primary mt-16" onclick="submitReport()">Generate Report</button>
+    </div>
+
+    <div id="report-out" style="display:none" class="mt-16"></div>
+
+    <div class="card mt-16">
+      <div class="card-title">Past Reports</div>
+      <div id="past-reports"><p class="text-muted text-sm">Loading�</p></div>
+    </div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+let issueCount = 0;
+const SEV_BADGE = {critical:'badge-danger',major:'badge-warning',minor:'badge-info'};
+
+function addIssueRow() {
+  issueCount++;
+  const id = `issue-${issueCount}`;
+  const row = document.createElement('div');
+  row.className = 'issue-row'; row.id = id;
+  row.innerHTML = `
+    <select class="form-select" id="${id}-sev">
+      <option value="critical">Critical</option><option value="major" selected>Major</option><option value="minor">Minor</option>
+    </select>
+    <div style="display:flex;gap:8px;flex:1">
+      <input class="form-input" id="${id}-title" placeholder="Issue title" style="flex:1" />
+      <input class="form-input" id="${id}-desc" placeholder="Description (optional)" style="flex:2" />
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('${id}').remove()">?</button>
+    </div>`;
+  document.getElementById('issues-container').appendChild(row);
+}
+
+async function submitReport() {
+  const title = document.getElementById('r-title').value.trim();
+  if (!title) { toast('Report title required','error'); return; }
+  const issues = [];
+  document.querySelectorAll('[id^="issue-"]').forEach(row => {
+    const n = row.id;
+    const t = document.getElementById(n+'-title')?.value.trim();
+    if (t) issues.push({title:t, description:document.getElementById(n+'-desc')?.value.trim()||'', severity:document.getElementById(n+'-sev')?.value});
+  });
+  if (!issues.length) { toast('Add at least one issue','error'); return; }
+  try {
+    const report = await ApiClient.debugging.create({title, issues});
+    renderReport(report);
+    toast('Report generated','success');
+    loadPastReports();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+function renderReport(report) {
+  const out = document.getElementById('report-out');
+  out.innerHTML = `<div class="card">
+    <div class="card-title">?? ${escHtml(report.title)} <span class="badge badge-muted text-sm">${report.issues.length} issue${report.issues.length!==1?'s':''}</span></div>
+    ${report.issues.map(i => `
+      <div class="card sev-${i.severity}" style="margin-top:10px">
+        <div class="flex items-center gap-8 mb-8">
+          <span class="badge ${SEV_BADGE[i.severity]||'badge-muted'}">${i.severity}</span>
+          <strong>${escHtml(i.title)}</strong>
+        </div>
+        ${i.description ? `<p class="text-muted text-sm" style="margin-bottom:6px">${escHtml(i.description)}</p>` : ''}
+        <div style="background:var(--surface-2);border-radius:6px;padding:8px 12px;font-size:12.5px">
+          ?? <em>${escHtml(i.suggested_fix)}</em>
+        </div>
+      </div>`).join('')}
+  </div>`;
+  out.style.display = 'block';
+}
+
+async function loadPastReports() {
+  try {
+    const {reports} = await ApiClient.debugging.list();
+    const el = document.getElementById('past-reports');
+    if (!reports.length) { el.innerHTML='<p class="text-muted text-sm">No reports yet.</p>'; return; }
+    el.innerHTML = `<table><thead><tr><th>ID</th><th>Title</th><th>Issues</th><th>Date</th></tr></thead><tbody>
+      ${reports.map(r=>`<tr>
+        <td class="text-muted">#${r.id}</td>
+        <td><a href="javascript:void(0)" style="color:var(--accent)" onclick="loadReport(${r.id})">${escHtml(r.title)}</a></td>
+        <td>${r.issues.length}</td>
+        <td class="text-muted text-sm">${r.created_at?new Date(r.created_at).toLocaleDateString():'�'}</td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) {}
+}
+
+async function loadReport(id) {
+  try { const r = await ApiClient.debugging.get(id); renderReport(r); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+addIssueRow();
+loadPastReports();
+</script>
+</body></html>

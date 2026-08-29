@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevHub Platform - Home</title>
+  <link rel="stylesheet" href="static/style.css" />
+  <style>
+    .home-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin-top:16px; }
+    .home-card { text-decoration:none; color:inherit; transition:border-color .15s, transform .1s; }
+    .home-card:hover { border-color:var(--accent); transform:translateY(-1px); }
+    .home-card .home-card-icon { transition:background .15s; }
+    .home-card-name { font-size:14px; font-weight:600; margin-bottom:4px; }
+    .home-card-desc { font-size:12px; color:var(--text-muted); line-height:1.5; }
+    .pulse-card { border-color:rgba(79,142,247,.35); background:linear-gradient(135deg,var(--surface),#0f1e3a); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="pages/teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pages/pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="pages/mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="pages/dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="pages/analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="pages/debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="pages/review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="pages/testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="pages/deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="pages/maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pages/pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Welcome to DevHub</div>
+        <div class="page-sub">ADE.UA Integrated Developer Platform — select a module below to get started.</div>
+      </div>
+    </div>
+
+    <div class="home-grid">
+
+      <a class="card home-card" href="pages/teams.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="home-card-name">Onboarding / Teams</div>
+        <div class="home-card-desc">Manage members, assign roles, view the team roster instantly.</div>
+      </a>
+
+      <a class="card home-card" href="pages/pipeline.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="home-card-name">Pipeline Access</div>
+        <div class="home-card-desc">Build / test / deploy stage status per project with GitHub Actions sync.</div>
+      </a>
+
+      <a class="card home-card" href="pages/mindmap.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></div>
+        <div class="home-card-name">Project Mindmap</div>
+        <div class="home-card-desc">Interactive SVG node-graph of your project architecture.</div>
+      </a>
+
+      <a class="card home-card" href="pages/dashboard.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <div class="home-card-name">Group Dashboard</div>
+        <div class="home-card-desc">Shared Milanote-style board — draggable idea cards with comments.</div>
+      </a>
+
+      <a class="card home-card" href="pages/analyzer.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></div>
+        <div class="home-card-name">Analyzer</div>
+        <div class="home-card-desc">Auto-detect stack and conventions; get industry-standard tool suggestions.</div>
+      </a>
+
+      <a class="card home-card" href="pages/debugging.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></div>
+        <div class="home-card-name">Debugging Report</div>
+        <div class="home-card-desc">Severity-sorted issue list (critical / major / minor) with fix suggestions.</div>
+      </a>
+
+      <a class="card home-card" href="pages/review.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <div class="home-card-name">Senior Review</div>
+        <div class="home-card-desc">Priority-tagged (high / medium / low) summary of recent changes.</div>
+      </a>
+
+      <a class="card home-card" href="pages/testing.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="home-card-name">Testing</div>
+        <div class="home-card-desc">Structured test run viewer with critical / warning / info severity flags.</div>
+      </a>
+
+      <a class="card home-card" href="pages/deployment.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="home-card-name">Deployment Verification</div>
+        <div class="home-card-desc">Automated Go / No-Go gate: pipeline + open bugs + failing tests.</div>
+      </a>
+
+      <a class="card home-card" href="pages/maintenance.html">
+        <div class="home-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+        <div class="home-card-name">Maintenance</div>
+        <div class="home-card-desc">Recurring task tracker — due dates, recurrence, overdue auto-detection.</div>
+      </a>
+
+      <a class="card home-card pulse-card" href="pages/pulse.html">
+        <div class="home-card-icon" style="background:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="home-card-name" style="color:var(--accent)">Team Pulse ★</div>
+        <div class="home-card-desc">Live 0-100 health score across all 10 modules. Letter grade A-F. 30s refresh.</div>
+      </a>
+
+    </div>
+  </main>
+</div>
+<div id="toast-container"></div>
+<script src="static/app.js"></script>
+<script src="static/api-client.js"></script>
+</body>
+</html>
