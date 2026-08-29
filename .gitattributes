@@ -1,2 +1,18 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+﻿# Normalize line endings to LF on checkin for text files
+* text=auto eol=lf
+
+# Explicit overrides
+*.py   text eol=lf
+*.html text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+*.txt  text eol=lf
+*.toml text eol=lf
+
+# Binaries
+*.db   binary
+*.png  binary
+*.jpg  binary
+*.ico  binary
