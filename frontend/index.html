@@ -3,97 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ADE.UA DevHub - Home</title>
+  <title>ADE.UA DevHub</title>
   <link rel="stylesheet" href="static/style.css" />
   <style>
     /* Hero */
     .hero {
-      background: linear-gradient(135deg, #0f1117 0%, #0f1e3a 50%, #130d25 100%);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 36px 40px 32px;
-      margin-bottom: 24px;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(135deg, #0b0e18 0%, #0d1a30 55%, #110a22 100%);
+      border: 1px solid var(--border-2);
+      border-radius: 16px; padding: 32px 36px 28px;
+      margin-bottom: 22px; position: relative; overflow: hidden;
     }
-    .hero::before {
-      content:'';position:absolute;inset:0;
-      background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(79,142,247,.07) 0%, transparent 70%);
+    .hero::after {
+      content:''; position:absolute; right:-80px; top:-80px;
+      width:320px; height:320px; border-radius:50%;
+      background: radial-gradient(circle, rgba(79,142,247,.08) 0%, transparent 70%);
       pointer-events:none;
     }
-    .hero-badge {
-      display:inline-flex;align-items:center;gap:6px;
-      background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.25);
-      border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;
-      letter-spacing:.08em;text-transform:uppercase;color:var(--accent);
-      margin-bottom:16px;
+    .hero-eyebrow {
+      display:inline-flex; align-items:center; gap:7px; margin-bottom:14px;
+      background:rgba(79,142,247,.1); border:1px solid rgba(79,142,247,.2);
+      border-radius:99px; padding:4px 13px; font-size:11px; font-weight:700;
+      letter-spacing:.1em; text-transform:uppercase; color:var(--accent);
     }
-    .hero-badge-dot { width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse-dot 2s ease infinite; }
-    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
-    .hero-title { font-size:30px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1.2;margin-bottom:8px; }
-    .hero-title span { background:linear-gradient(120deg,var(--accent),#7c5cd8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-    .hero-sub { font-size:13.5px;color:var(--text-muted);max-width:540px;line-height:1.6;margin-bottom:24px; }
-    .hero-stats { display:flex;gap:32px;flex-wrap:wrap; }
-    .hero-stat { display:flex;flex-direction:column;gap:2px; }
-    .hero-stat-val { font-size:22px;font-weight:800;color:#fff;line-height:1; }
-    .hero-stat-val.green { color:var(--success); }
-    .hero-stat-val.blue  { color:var(--accent); }
-    .hero-stat-val.purple{ color:#a78bfa; }
-    .hero-stat-label { font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em; }
+    .live-dot { width:6px;height:6px;border-radius:50%;background:var(--teal);
+      animation:blink 2s ease infinite; }
+    @keyframes blink {0%,100%{opacity:1}50%{opacity:.3}}
+    .hero-title { font-size:28px;font-weight:900;letter-spacing:-.4px;line-height:1.15;margin-bottom:8px; }
+    .hero-title .t-blue   { color:var(--accent); }
+    .hero-title .t-teal   { color:var(--teal); }
+    .hero-title .t-violet { color:var(--violet-bright); }
+    .hero-sub { font-size:13px;color:var(--text-muted);max-width:520px;line-height:1.65;margin-bottom:22px; }
+    .stat-row { display:flex;gap:28px;flex-wrap:wrap;align-items:flex-end; }
+    .stat { display:flex;flex-direction:column;gap:2px; }
+    .stat-val { font-size:24px;font-weight:900;line-height:1;letter-spacing:-.5px; }
+    .stat-label { font-size:10.5px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em; }
     /* Pulse widget */
-    .pulse-widget {
-      position:absolute;right:40px;top:50%;transform:translateY(-50%);
-      background:rgba(15,17,23,.7);border:1px solid rgba(79,142,247,.2);
-      border-radius:12px;padding:16px 20px;min-width:140px;text-align:center;
-      backdrop-filter:blur(8px);
+    .pulse-float {
+      position:absolute;right:36px;top:50%;transform:translateY(-50%);
+      background:rgba(11,13,20,.85);border:1px solid var(--border-2);
+      border-radius:14px;padding:18px 22px;min-width:130px;text-align:center;
+      backdrop-filter:blur(12px);
     }
-    .pulse-grade { font-size:52px;font-weight:900;line-height:1;
-      background:linear-gradient(135deg,var(--accent),var(--success));
+    .pf-grade { font-size:56px;font-weight:900;line-height:1;
+      background:linear-gradient(135deg,var(--accent),var(--teal));
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-    .pulse-score-val { font-size:13px;color:var(--text-muted);margin-top:2px; }
-    .pulse-label { font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-top:6px; }
+    .pf-score { font-size:12px;color:var(--text-muted);margin-top:3px; }
+    .pf-label { font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--text-dim);margin-top:6px; }
     /* Module grid */
-    .section-title { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:12px;margin-top:4px; }
-    .mod-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px; }
+    .section-head {
+      display:flex;align-items:center;gap:10px;margin-bottom:14px;margin-top:4px;
+    }
+    .section-head-line { flex:1;height:1px;background:var(--border); }
+    .section-head-label { font-size:10.5px;font-weight:700;text-transform:uppercase;
+      letter-spacing:.12em;color:var(--text-dim);white-space:nowrap; }
+    .mod-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:11px;margin-bottom:18px; }
     .mod-card {
       text-decoration:none;color:inherit;
-      background:var(--surface);border:1px solid var(--border);border-radius:12px;
-      padding:16px;display:flex;flex-direction:column;gap:0;
-      transition:border-color .15s,transform .12s,background .15s;cursor:pointer;
+      background:var(--surface);
+      border:1px solid var(--card-border, var(--border));
+      border-radius:12px;padding:16px;
+      display:flex;flex-direction:column;
+      transition:border-color .15s,transform .12s,background .15s;
     }
-    .mod-card:hover { border-color:var(--accent);transform:translateY(-2px);background:var(--surface-2); }
+    .mod-card:hover { transform:translateY(-2px); background:var(--surface-2);
+      border-color:var(--card-border, var(--border)); box-shadow: 0 4px 20px rgba(0,0,0,.4); }
     .mod-icon {
-      width:34px;height:34px;border-radius:8px;background:var(--accent-dim);
+      width:34px;height:34px;border-radius:9px;
+      background:var(--card-icon-bg, var(--surface-2));
       display:flex;align-items:center;justify-content:center;margin-bottom:10px;
       transition:background .15s;
     }
-    .mod-icon svg { width:17px;height:17px;stroke:var(--accent); }
-    .mod-card:hover .mod-icon { background:var(--accent); }
+    .mod-icon svg { width:17px;height:17px;stroke:var(--card-icon-color, var(--accent)); fill:none; }
+    .mod-card:hover .mod-icon { background:var(--card-icon-hover, var(--accent)); }
     .mod-card:hover .mod-icon svg { stroke:#fff; }
-    .mod-name { font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text); }
-    .mod-desc { font-size:11.5px;color:var(--text-muted);line-height:1.45; }
-    .mod-card.pulse-card { border-color:rgba(79,142,247,.3);background:linear-gradient(135deg,var(--surface),#0d1a35); }
-    .mod-card.pulse-card .mod-icon { background:var(--accent); }
-    .mod-card.pulse-card .mod-icon svg { stroke:#fff; }
-    .mod-card.pulse-card .mod-name { color:var(--accent); }
-    /* Sidebar pulse live */
-    .sidebar-pulse {
-      margin:12px 12px 0;padding:10px 12px;
-      background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:12px;
+    .mod-name { font-size:13px;font-weight:700;margin-bottom:4px;color:var(--text); }
+    .mod-desc { font-size:11.5px;color:var(--text-muted);line-height:1.5; }
+    /* Pulse card special */
+    .pulse-card {
+      background:linear-gradient(135deg,var(--surface),#110a22);
+      border-color:var(--violet) !important;
     }
-    .sidebar-pulse-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:6px; }
-    .sidebar-pulse-label { font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted); }
-    .sidebar-pulse-grade { font-weight:800;color:var(--success);font-size:14px; }
-    .dim-bar-wrap { display:flex;flex-direction:column;gap:4px; }
-    .dim-bar-row { display:flex;align-items:center;gap:6px; }
-    .dim-bar-name { width:52px;font-size:10px;color:var(--text-muted);flex-shrink:0;text-transform:capitalize; }
-    .dim-bar-track { flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden; }
-    .dim-bar-fill { height:100%;border-radius:99px;background:var(--accent);transition:width .6s ease; }
-    .dim-bar-fill.full { background:var(--success); }
+    .pulse-card .mod-icon { background:var(--violet-dim); }
+    .pulse-card .mod-icon svg { stroke:var(--violet-bright); }
+    .pulse-card:hover .mod-icon { background:var(--violet); }
+    .pulse-card .mod-name { color:var(--violet-bright); }
+    /* Sidebar live pulse */
+    .sb-pulse-wrap { margin:10px 10px 0; padding:10px 12px;
+      background:var(--surface-2);border:1px solid var(--border);border-radius:8px; }
+    .sb-pulse-top { display:flex;justify-content:space-between;align-items:center;margin-bottom:7px; }
+    .sb-pulse-lbl { font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--text-dim); }
+    .sb-pulse-grade { font-size:16px;font-weight:900;color:var(--teal); }
+    .dimrow { display:flex;align-items:center;gap:5px;margin-bottom:3px; }
+    .dimrow-name { width:46px;font-size:9.5px;color:var(--text-dim);text-transform:capitalize; }
+    .dimrow-track { flex:1;height:3px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden; }
+    .dimrow-fill { height:100%;border-radius:99px;transition:width .6s; }
   </style>
 </head>
 <body>
 <div class="app-shell">
+  <!-- Sidebar -->
   <nav class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
@@ -112,13 +120,13 @@
       <a class="nav-link" href="pages/maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
       <a class="nav-link" href="pages/pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
     </div>
-    <!-- Live Pulse mini-widget in sidebar -->
-    <div class="sidebar-pulse" id="sb-pulse">
-      <div class="sidebar-pulse-header">
-        <span class="sidebar-pulse-label">Team Pulse</span>
-        <span class="sidebar-pulse-grade" id="sb-grade">--</span>
+    <!-- Live sidebar pulse widget -->
+    <div class="sb-pulse-wrap">
+      <div class="sb-pulse-top">
+        <span class="sb-pulse-lbl">Team Pulse</span>
+        <span class="sb-pulse-grade" id="sb-grade">--</span>
       </div>
-      <div class="dim-bar-wrap" id="sb-dims"></div>
+      <div id="sb-dims"></div>
     </div>
   </nav>
 
@@ -126,117 +134,142 @@
 
     <!-- Hero -->
     <div class="hero">
-      <div class="hero-badge"><span class="hero-badge-dot"></span>Live Platform</div>
-      <div class="hero-title">ADE.UA <span>DevHub</span></div>
-      <div class="hero-sub">Agentic Developer Platform — 10 integrated workflow modules that unify onboarding, pipeline visibility, code review, testing, deployment gates, and team health into a single real-time dashboard.</div>
-      <div class="hero-stats">
-        <div class="hero-stat"><span class="hero-stat-val blue" id="stat-members">--</span><span class="hero-stat-label">Team Members</span></div>
-        <div class="hero-stat"><span class="hero-stat-val blue" id="stat-projects">--</span><span class="hero-stat-label">Pipeline Projects</span></div>
-        <div class="hero-stat"><span class="hero-stat-val green" id="stat-tests">71</span><span class="hero-stat-label">Automated Tests</span></div>
-        <div class="hero-stat"><span class="hero-stat-val purple" id="stat-score">--</span><span class="hero-stat-label">Health Score</span></div>
+      <div class="hero-eyebrow"><span class="live-dot"></span>Live Platform</div>
+      <div class="hero-title">
+        <span class="t-blue">ADE.UA</span> <span class="t-teal">Dev</span><span class="t-violet">Hub</span>
       </div>
-      <div class="pulse-widget">
-        <div class="pulse-grade" id="hero-grade">--</div>
-        <div class="pulse-score-val" id="hero-score">-- / 100</div>
-        <div class="pulse-label">Team Pulse</div>
+      <div class="hero-sub">10 integrated developer workflow modules — from onboarding to deployment gate, unified in one real-time platform. Built with IBM Bob 2.0.</div>
+      <div class="stat-row">
+        <div class="stat"><span class="stat-val" id="st-members" style="color:var(--teal)">--</span><span class="stat-label">Team Members</span></div>
+        <div class="stat"><span class="stat-val" id="st-projects" style="color:var(--accent)">--</span><span class="stat-label">Projects</span></div>
+        <div class="stat"><span class="stat-val" style="color:var(--violet-bright)">71</span><span class="stat-label">Tests Passing</span></div>
+        <div class="stat"><span class="stat-val" id="st-score" style="color:var(--ochre-bright)">--</span><span class="stat-label">Health Score</span></div>
+        <div class="stat"><span class="stat-val" id="st-tasks" style="color:var(--scarlet)">--</span><span class="stat-label">Open Tasks</span></div>
+      </div>
+      <div class="pulse-float">
+        <div class="pf-grade" id="pf-grade">--</div>
+        <div class="pf-score" id="pf-score">-- / 100</div>
+        <div class="pf-label">Team Pulse</div>
       </div>
     </div>
 
-    <!-- Modules -->
-    <div class="section-title">Workflow Modules</div>
+    <!-- Team & Collaboration -->
+    <div class="section-head">
+      <span class="section-head-label">Team &amp; Collaboration</span>
+      <div class="section-head-line"></div>
+    </div>
     <div class="mod-grid">
-
-      <a class="mod-card" href="pages/teams.html">
+      <a class="mod-card" href="pages/teams.html" style="--card-icon-bg:var(--teal-dim);--card-border:var(--teal);--card-icon-color:var(--teal);--card-icon-hover:var(--teal);">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
         <div class="mod-name">Onboarding / Teams</div>
-        <div class="mod-desc">Members, roles, instant roster. Lead / dev / reviewer / tester.</div>
+        <div class="mod-desc">Members, roles, instant roster.</div>
       </a>
-      <a class="mod-card" href="pages/pipeline.html">
-        <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <div class="mod-name">Pipeline Access</div>
-        <div class="mod-desc">Build · test · deploy status per project with GitHub Actions sync.</div>
+      <a class="mod-card" href="pages/pipeline.html" style="--card-icon-bg:;--card-border:;--card-icon-color:;--card-icon-hover:;">
+        <div class="mod-icon"></div>
+        <div class="mod-name">Build · test · deploy status with GitHub Actions sync.</div>
+        <div class="mod-desc">pipeline</div>
       </a>
-      <a class="mod-card" href="pages/mindmap.html">
+      <a class="mod-card" href="pages/mindmap.html" style="--card-icon-bg:var(--violet-dim);--card-border:var(--violet);--card-icon-color:var(--violet-bright);--card-icon-hover:var(--violet);">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></div>
         <div class="mod-name">Project Mindmap</div>
-        <div class="mod-desc">Draggable SVG node-graph. Map architecture interactively.</div>
+        <div class="mod-desc">Draggable SVG architecture graph.</div>
       </a>
-      <a class="mod-card" href="pages/dashboard.html">
-        <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
-        <div class="mod-name">Group Dashboard</div>
-        <div class="mod-desc">Milanote-style idea board. Draggable cards with threaded comments.</div>
+      <a class="mod-card" href="pages/dashboard.html"board" style="--card-icon-bg:;--card-border:;--card-icon-color:;--card-icon-hover:;">
+        <div class="mod-icon"></div>
+        <div class="mod-name">Milanote-style board with cards and threaded comments.</div>
+        <div class="mod-desc">dashboard</div>
       </a>
-      <a class="mod-card" href="pages/analyzer.html">
+    </div>
+
+    <!-- Analysis & Quality -->
+    <div class="section-head">
+      <span class="section-head-label">Analysis &amp; Quality</span>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="mod-grid">
+      <a class="mod-card" href="pages/analyzer.html" style="--card-icon-bg:var(--teal-dim);--card-border:var(--teal);--card-icon-color:var(--teal);--card-icon-hover:var(--teal);">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
         <div class="mod-name">Analyzer</div>
-        <div class="mod-desc">Auto-detect stack + conventions. Get industry tool suggestions.</div>
+        <div class="mod-desc">Auto-detect stack + get tool suggestions.</div>
       </a>
-      <a class="mod-card" href="pages/debugging.html">
+      <a class="mod-card" href="pages/debugging.html" style="--card-icon-bg:var(--scarlet-dim);--card-border:var(--scarlet);--card-icon-color:var(--scarlet);--card-icon-hover:var(--scarlet);">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></div>
         <div class="mod-name">Debugging Report</div>
-        <div class="mod-desc">Severity-sorted issues. Critical at top. Auto-generated fix hints.</div>
+        <div class="mod-desc">Critical issues at top. Auto-generated fix hints.</div>
       </a>
-      <a class="mod-card" href="pages/review.html">
+      <a class="mod-card" href="pages/review.html" style="--card-icon-bg:var(--violet-dim);--card-border:var(--violet);--card-icon-color:var(--violet-bright);--card-icon-hover:var(--violet);">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
         <div class="mod-name">Senior Review</div>
-        <div class="mod-desc">Changes tagged high / medium / low priority. High items surface first.</div>
+        <div class="mod-desc">High / medium / low priority tags. High items surface first.</div>
       </a>
-      <a class="mod-card" href="pages/testing.html">
+      <a class="mod-card" href="pages/testing.html" style="--card-icon-bg:var(--teal-dim);--card-border:var(--teal);--card-icon-color:var(--teal);--card-icon-hover:var(--teal);">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
         <div class="mod-name">Testing</div>
-        <div class="mod-desc">Test run viewer. Critical / warning / info severity auto-flagged.</div>
+        <div class="mod-desc">Test runs with critical / warning / info severity flags.</div>
       </a>
-      <a class="mod-card" href="pages/deployment.html">
+    </div>
+
+    <!-- Operations -->
+    <div class="section-head">
+      <span class="section-head-label">Operations</span>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="mod-grid">
+      <a class="mod-card" href="pages/deployment.html" style="--card-icon-bg:var(--scarlet-dim);--card-border:var(--scarlet);--card-icon-color:var(--scarlet);--card-icon-hover:var(--scarlet);">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
         <div class="mod-name">Deployment Verification</div>
-        <div class="mod-desc">Automated Go / No-Go: pipeline + open bugs + failing tests. Zero missed checks.</div>
+        <div class="mod-desc">3-gate Go / No-Go: pipeline + bugs + tests.</div>
       </a>
-      <a class="mod-card" href="pages/maintenance.html">
+      <a class="mod-card" href="pages/maintenance.html" style="--card-icon-bg:var(--ochre-dim);--card-border:var(--ochre-bright);--card-icon-color:var(--ochre-bright);--card-icon-hover:var(--ochre);">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
         <div class="mod-name">Maintenance</div>
-        <div class="mod-desc">Recurring task tracker. Server-side overdue detection. Never miss a patch.</div>
+        <div class="mod-desc">Recurring tasks. Server-side overdue detection.</div>
       </a>
       <a class="mod-card pulse-card" href="pages/pulse.html">
         <div class="mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
         <div class="mod-name">Team Pulse</div>
-        <div class="mod-desc">Live 0-100 health score across all 10 modules. Grade A-F. 30s refresh.</div>
+        <div class="mod-desc">Live 0-100 health score across all 10 modules. Grade A-F. 30s auto-refresh.</div>
       </a>
-
     </div>
+
   </main>
 </div>
 <div id="toast-container"></div>
 <script src="static/app.js"></script>
 <script src="static/api-client.js"></script>
 <script>
-async function loadHero() {
+const DIM_COLOURS = {
+  pipeline:'var(--accent)', quality:'var(--teal)', team:'var(--violet-bright)',
+  maintenance:'var(--ochre-bright)', activity:'var(--scarlet)'
+};
+async function loadDash() {
   try {
-    const [teams, pipe, pulse] = await Promise.all([
-      fetch('/api/teams/members').then(r=>r.json()),
-      fetch('/api/pipeline/projects').then(r=>r.json()),
-      fetch('/api/pulse/score').then(r=>r.json())
+    const [teams, pipe, maint, pulse] = await Promise.all([
+      ApiClient.teams.list(),
+      ApiClient.pipeline.list(),
+      ApiClient.maintenance.list(),
+      ApiClient.pulse.score()
     ]);
-    document.getElementById('stat-members').textContent  = teams.members?.length ?? '--';
-    document.getElementById('stat-projects').textContent = pipe.projects?.length ?? '--';
-    document.getElementById('stat-score').textContent    = pulse.overall ?? '--';
-    document.getElementById('hero-grade').textContent    = pulse.grade  ?? '--';
-    document.getElementById('hero-score').textContent    = (pulse.overall ?? '--') + ' / 100';
-    document.getElementById('sb-grade').textContent      = pulse.grade  ?? '--';
-    // sidebar dimension bars
-    const dims = pulse.dimensions;
-    if (dims) {
-      const wrap = document.getElementById('sb-dims');
-      wrap.innerHTML = Object.entries(dims).map(([name, d]) => `+
-        `+'<div class="dim-bar-row">'+
-        `+'<span class="dim-bar-name">'+name.slice(0,7)+'</span>'+
-        `+'<div class="dim-bar-track"><div class="dim-bar-fill'+(d.score>=100?' full':'')+'" style="width:'+d.score+'%"></div></div>'+
-        `+'</div>'
+    document.getElementById('st-members').textContent  = teams.members?.length ?? '--';
+    document.getElementById('st-projects').textContent = pipe.projects?.length ?? '--';
+    document.getElementById('st-score').textContent    = pulse.overall ?? '--';
+    document.getElementById('st-tasks').textContent    = (maint.tasks?.filter(t=>t.status==='pending')?.length) ?? '--';
+    document.getElementById('pf-grade').textContent    = pulse.grade  ?? '--';
+    document.getElementById('pf-score').textContent    = (pulse.overall ?? '--') + ' / 100';
+    document.getElementById('sb-grade').textContent    = pulse.grade  ?? '--';
+    if (pulse.dimensions) {
+      const dims = document.getElementById('sb-dims');
+      dims.innerHTML = Object.entries(pulse.dimensions).map(([name, d]) =>
+        '<div class="dimrow">' +
+        '<span class="dimrow-name">' + name.slice(0,7) + '</span>' +
+        '<div class="dimrow-track"><div class="dimrow-fill" style="width:' + d.score + '%;background:' + (DIM_COLOURS[name]||'var(--accent)') + '"></div></div>' +
+        '</div>'
       ).join('');
     }
   } catch(e) {}
 }
-loadHero();
-setInterval(loadHero, 30000);
+loadDash();
+setInterval(loadDash, 30000);
 </script>
 </body>
 </html>

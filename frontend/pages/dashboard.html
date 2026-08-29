@@ -47,7 +47,107 @@
   </nav>
   <main class="main-content">
         <div class="page-header">
-      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Group Dashboard</div>
+        <div class="page-sub">Shared board with draggable idea cards and comments.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">New Card</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="c-title" class="form-input" placeholder="Idea title" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Author</label><input id="c-author" class="form-input" placeholder="Your name" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Color</label>
+          <select id="c-color" class="form-select">
+            <option value="#fffacd">Yellow</option><option value="#d4f1f9">Blue</option>
+            <option value="#d5f5e3">Green</option><option value="#fde8d8">Orange</option><option value="#e8daef">Purple</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group mt-8"><label class="form-label">Body (optional)</label><textarea id="c-body" class="form-textarea" placeholder="Details�" style="min-height:52px"></textarea></div>
+      <button class="btn btn-primary" onclick="createCard()">Post Card</button>
+    </div>
+
+    <div class="board mt-16" id="board"></div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+let _cards = [];
+
+async function loadCards() {
+  try { const {cards} = await ApiClient.dashboard.list(); _cards = cards; renderCards(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function renderCards() {
+  const board = document.getElementById('board');
+  board.querySelectorAll('.board-card').forEach(el => el.remove());
+  _cards.forEach(card => mountCard(card));
+}
+
+function mountCard(card) {
+  const board = document.getElementById('board');
+  const el = document.createElement('div');
+  el.className = 'board-card';
+  el.style.left = card.x + 'px'; el.style.top = card.y + 'px';
+  el.style.background = card.color;
+  el.dataset.id = card.id;
+  el.innerHTML = `
+    <div class="card-head">
+      <strong>${escHtml(card.title)}</strong>
+      <button class="del-card" onclick="deleteCard('${card.id}')"> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .board { position:relative; width:100%; height:640px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .board-card { position:absolute; width:220px; border-radius:var(--radius-lg); padding:12px 14px; cursor:grab; box-shadow:0 3px 12px rgba(0,0,0,.35); font-size:13px; }
+    .board-card:active { cursor:grabbing; }
+    .board-card .card-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+    .board-card .card-head strong { font-size:13.5px; color:#1f2328; }
+    .board-card .del-card { background:none;border:none;cursor:pointer;font-size:14px;color:#666;padding:0; }
+    .board-card .card-body-text { font-size:12.5px; color:#444; margin-bottom:8px; }
+    .board-card .card-author { font-size:11px; color:#888; }
+    .board-card .toggle-comments { font-size:11px; color:#3b82f6; cursor:pointer; background:none;border:none;margin-top:4px; }
+    .comments-panel { border-top:1px solid rgba(0,0,0,.12); margin-top:8px; padding-top:8px; }
+    .comment-item { font-size:11.5px; color:#333; margin-bottom:4px; }
+    .comment-form { display:flex; gap:4px; margin-top:6px; }
+    .comment-form input { flex:1; border:1px solid #ccc; border-radius:4px; padding:3px 6px; font-size:11.5px; }
+    .comment-form button { background:#3b82f6; color:#fff; border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link active" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
       <div class="page-header-text">
         <div class="page-title">Group Dashboard</div>
         <div class="page-sub">Shared board with draggable idea cards and comments.</div>
@@ -173,6 +273,555 @@ async function addComment(cardId) {
 }
 
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadCards();
+</script>
+</body></html>
+.Value -replace '\?+', '' </button>
+    </div> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .board { position:relative; width:100%; height:640px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .board-card { position:absolute; width:220px; border-radius:var(--radius-lg); padding:12px 14px; cursor:grab; box-shadow:0 3px 12px rgba(0,0,0,.35); font-size:13px; }
+    .board-card:active { cursor:grabbing; }
+    .board-card .card-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+    .board-card .card-head strong { font-size:13.5px; color:#1f2328; }
+    .board-card .del-card { background:none;border:none;cursor:pointer;font-size:14px;color:#666;padding:0; }
+    .board-card .card-body-text { font-size:12.5px; color:#444; margin-bottom:8px; }
+    .board-card .card-author { font-size:11px; color:#888; }
+    .board-card .toggle-comments { font-size:11px; color:#3b82f6; cursor:pointer; background:none;border:none;margin-top:4px; }
+    .comments-panel { border-top:1px solid rgba(0,0,0,.12); margin-top:8px; padding-top:8px; }
+    .comment-item { font-size:11.5px; color:#333; margin-bottom:4px; }
+    .comment-form { display:flex; gap:4px; margin-top:6px; }
+    .comment-form input { flex:1; border:1px solid #ccc; border-radius:4px; padding:3px 6px; font-size:11.5px; }
+    .comment-form button { background:#3b82f6; color:#fff; border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link active" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Group Dashboard</div>
+        <div class="page-sub">Shared board with draggable idea cards and comments.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">New Card</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="c-title" class="form-input" placeholder="Idea title" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Author</label><input id="c-author" class="form-input" placeholder="Your name" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Color</label>
+          <select id="c-color" class="form-select">
+            <option value="#fffacd">Yellow</option><option value="#d4f1f9">Blue</option>
+            <option value="#d5f5e3">Green</option><option value="#fde8d8">Orange</option><option value="#e8daef">Purple</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group mt-8"><label class="form-label">Body (optional)</label><textarea id="c-body" class="form-textarea" placeholder="Details�" style="min-height:52px"></textarea></div>
+      <button class="btn btn-primary" onclick="createCard()">Post Card</button>
+    </div>
+
+    <div class="board mt-16" id="board"></div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+let _cards = [];
+
+async function loadCards() {
+  try { const {cards} = await ApiClient.dashboard.list(); _cards = cards; renderCards(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function renderCards() {
+  const board = document.getElementById('board');
+  board.querySelectorAll('.board-card').forEach(el => el.remove());
+  _cards.forEach(card => mountCard(card));
+}
+
+function mountCard(card) {
+  const board = document.getElementById('board');
+  const el = document.createElement('div');
+  el.className = 'board-card';
+  el.style.left = card.x + 'px'; el.style.top = card.y + 'px';
+  el.style.background = card.color;
+  el.dataset.id = card.id;
+  el.innerHTML = `
+    <div class="card-head">
+      <strong>${escHtml(card.title)}</strong>
+      <button class="del-card" onclick="deleteCard('${card.id}')">?</button>
+    </div>
+    ${card.body ? `<div class="card-body-text">${escHtml(card.body)}</div>` : ''}
+    <div class="card-author">� ${escHtml(card.author)}</div>
+    <button class="toggle-comments" onclick="toggleComments('${card.id}')">?? ${card.comments.length} comment${card.comments.length!==1?'s':''}</button>
+    <div class="comments-panel" id="cp-${card.id}" style="display:none">
+      ${card.comments.map(c => `<div class="comment-item"><strong>${escHtml(c.author)}</strong>: ${escHtml(c.text)}</div>`).join('')}
+      <div class="comment-form">
+        <input id="cm-text-${card.id}" placeholder="Add comment�" />
+        <input id="cm-author-${card.id}" placeholder="Name" style="max-width:70px" />
+        <button onclick="addComment('${card.id}')">Post</button>
+      </div>
+    </div>`;
+  makeDraggable(el, card);
+  board.appendChild(el);
+}
+
+function makeDraggable(el, card) {
+  let ox=0, oy=0, moved=false;
+  el.addEventListener('mousedown', e => {
+    if (['INPUT','BUTTON','TEXTAREA'].includes(e.target.tagName)) return;
+    moved = false;
+    ox = e.clientX - card.x; oy = e.clientY - card.y;
+    const mm = ev => {
+      moved = true;
+      card.x = ev.clientX - ox; card.y = ev.clientY - oy;
+      el.style.left = card.x + 'px'; el.style.top = card.y + 'px';
+    };
+    const mu = () => {
+      window.removeEventListener('mousemove', mm);
+      window.removeEventListener('mouseup', mu);
+      if (moved) ApiClient.dashboard.update(card.id, {x: card.x, y: card.y}).catch(()=>{});
+    };
+    window.addEventListener('mousemove', mm);
+    window.addEventListener('mouseup', mu);
+  });
+}
+
+function toggleComments(id) {
+  const panel = document.getElementById('cp-' + id);
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+async function createCard() {
+  const title = document.getElementById('c-title').value.trim();
+  const author = document.getElementById('c-author').value.trim() || 'anonymous';
+  if (!title) { toast('Title required','error'); return; }
+  try {
+    const card = await ApiClient.dashboard.create({
+      title, body: document.getElementById('c-body').value.trim(),
+      color: document.getElementById('c-color').value, author,
+      x: 40 + Math.random()*200, y: 40 + Math.random()*200,
+    });
+    _cards.push(card); mountCard(card);
+    document.getElementById('c-title').value=''; document.getElementById('c-body').value='';
+    toast('Card posted','success');
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function deleteCard(id) {
+  try { await ApiClient.dashboard.remove(id); _cards = _cards.filter(c=>c.id!==id); renderCards(); toast('Card removed','success'); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function addComment(cardId) {
+  const text = document.getElementById('cm-text-'+cardId).value.trim();
+  const author = document.getElementById('cm-author-'+cardId).value.trim() || 'anonymous';
+  if (!text) return;
+  try {
+    await ApiClient.dashboard.addComment(cardId, {text, author});
+    toast('Comment added','success'); loadCards();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadCards();
+</script>
+</body></html>
+.Value -replace '\?+', '' <div class="card-body-text">${escHtml(card.body)}</div>` : ''}
+    <div class="card-author">� ${escHtml(card.author)}</div>
+    <button class="toggle-comments" onclick="toggleComments('${card.id}')"> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .board { position:relative; width:100%; height:640px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .board-card { position:absolute; width:220px; border-radius:var(--radius-lg); padding:12px 14px; cursor:grab; box-shadow:0 3px 12px rgba(0,0,0,.35); font-size:13px; }
+    .board-card:active { cursor:grabbing; }
+    .board-card .card-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+    .board-card .card-head strong { font-size:13.5px; color:#1f2328; }
+    .board-card .del-card { background:none;border:none;cursor:pointer;font-size:14px;color:#666;padding:0; }
+    .board-card .card-body-text { font-size:12.5px; color:#444; margin-bottom:8px; }
+    .board-card .card-author { font-size:11px; color:#888; }
+    .board-card .toggle-comments { font-size:11px; color:#3b82f6; cursor:pointer; background:none;border:none;margin-top:4px; }
+    .comments-panel { border-top:1px solid rgba(0,0,0,.12); margin-top:8px; padding-top:8px; }
+    .comment-item { font-size:11.5px; color:#333; margin-bottom:4px; }
+    .comment-form { display:flex; gap:4px; margin-top:6px; }
+    .comment-form input { flex:1; border:1px solid #ccc; border-radius:4px; padding:3px 6px; font-size:11.5px; }
+    .comment-form button { background:#3b82f6; color:#fff; border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link active" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Group Dashboard</div>
+        <div class="page-sub">Shared board with draggable idea cards and comments.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">New Card</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="c-title" class="form-input" placeholder="Idea title" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Author</label><input id="c-author" class="form-input" placeholder="Your name" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Color</label>
+          <select id="c-color" class="form-select">
+            <option value="#fffacd">Yellow</option><option value="#d4f1f9">Blue</option>
+            <option value="#d5f5e3">Green</option><option value="#fde8d8">Orange</option><option value="#e8daef">Purple</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group mt-8"><label class="form-label">Body (optional)</label><textarea id="c-body" class="form-textarea" placeholder="Details�" style="min-height:52px"></textarea></div>
+      <button class="btn btn-primary" onclick="createCard()">Post Card</button>
+    </div>
+
+    <div class="board mt-16" id="board"></div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+let _cards = [];
+
+async function loadCards() {
+  try { const {cards} = await ApiClient.dashboard.list(); _cards = cards; renderCards(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function renderCards() {
+  const board = document.getElementById('board');
+  board.querySelectorAll('.board-card').forEach(el => el.remove());
+  _cards.forEach(card => mountCard(card));
+}
+
+function mountCard(card) {
+  const board = document.getElementById('board');
+  const el = document.createElement('div');
+  el.className = 'board-card';
+  el.style.left = card.x + 'px'; el.style.top = card.y + 'px';
+  el.style.background = card.color;
+  el.dataset.id = card.id;
+  el.innerHTML = `
+    <div class="card-head">
+      <strong>${escHtml(card.title)}</strong>
+      <button class="del-card" onclick="deleteCard('${card.id}')">?</button>
+    </div>
+    ${card.body ? `<div class="card-body-text">${escHtml(card.body)}</div>` : ''}
+    <div class="card-author">� ${escHtml(card.author)}</div>
+    <button class="toggle-comments" onclick="toggleComments('${card.id}')">?? ${card.comments.length} comment${card.comments.length!==1?'s':''}</button>
+    <div class="comments-panel" id="cp-${card.id}" style="display:none">
+      ${card.comments.map(c => `<div class="comment-item"><strong>${escHtml(c.author)}</strong>: ${escHtml(c.text)}</div>`).join('')}
+      <div class="comment-form">
+        <input id="cm-text-${card.id}" placeholder="Add comment�" />
+        <input id="cm-author-${card.id}" placeholder="Name" style="max-width:70px" />
+        <button onclick="addComment('${card.id}')">Post</button>
+      </div>
+    </div>`;
+  makeDraggable(el, card);
+  board.appendChild(el);
+}
+
+function makeDraggable(el, card) {
+  let ox=0, oy=0, moved=false;
+  el.addEventListener('mousedown', e => {
+    if (['INPUT','BUTTON','TEXTAREA'].includes(e.target.tagName)) return;
+    moved = false;
+    ox = e.clientX - card.x; oy = e.clientY - card.y;
+    const mm = ev => {
+      moved = true;
+      card.x = ev.clientX - ox; card.y = ev.clientY - oy;
+      el.style.left = card.x + 'px'; el.style.top = card.y + 'px';
+    };
+    const mu = () => {
+      window.removeEventListener('mousemove', mm);
+      window.removeEventListener('mouseup', mu);
+      if (moved) ApiClient.dashboard.update(card.id, {x: card.x, y: card.y}).catch(()=>{});
+    };
+    window.addEventListener('mousemove', mm);
+    window.addEventListener('mouseup', mu);
+  });
+}
+
+function toggleComments(id) {
+  const panel = document.getElementById('cp-' + id);
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+async function createCard() {
+  const title = document.getElementById('c-title').value.trim();
+  const author = document.getElementById('c-author').value.trim() || 'anonymous';
+  if (!title) { toast('Title required','error'); return; }
+  try {
+    const card = await ApiClient.dashboard.create({
+      title, body: document.getElementById('c-body').value.trim(),
+      color: document.getElementById('c-color').value, author,
+      x: 40 + Math.random()*200, y: 40 + Math.random()*200,
+    });
+    _cards.push(card); mountCard(card);
+    document.getElementById('c-title').value=''; document.getElementById('c-body').value='';
+    toast('Card posted','success');
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function deleteCard(id) {
+  try { await ApiClient.dashboard.remove(id); _cards = _cards.filter(c=>c.id!==id); renderCards(); toast('Card removed','success'); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function addComment(cardId) {
+  const text = document.getElementById('cm-text-'+cardId).value.trim();
+  const author = document.getElementById('cm-author-'+cardId).value.trim() || 'anonymous';
+  if (!text) return;
+  try {
+    await ApiClient.dashboard.addComment(cardId, {text, author});
+    toast('Comment added','success'); loadCards();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadCards();
+</script>
+</body></html>
+.Value -replace '\?+', '' </button>
+    <div class="comments-panel" id="cp-${card.id}" style="display:none">
+      ${card.comments.map(c => `<div class="comment-item"><strong>${escHtml(c.author)}</strong>: ${escHtml(c.text)}</div>`).join('')}
+      <div class="comment-form">
+        <input id="cm-text-${card.id}" placeholder="Add comment�" />
+        <input id="cm-author-${card.id}" placeholder="Name" style="max-width:70px" />
+        <button onclick="addComment('${card.id}')">Post</button>
+      </div>
+    </div> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .board { position:relative; width:100%; height:640px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .board-card { position:absolute; width:220px; border-radius:var(--radius-lg); padding:12px 14px; cursor:grab; box-shadow:0 3px 12px rgba(0,0,0,.35); font-size:13px; }
+    .board-card:active { cursor:grabbing; }
+    .board-card .card-head { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+    .board-card .card-head strong { font-size:13.5px; color:#1f2328; }
+    .board-card .del-card { background:none;border:none;cursor:pointer;font-size:14px;color:#666;padding:0; }
+    .board-card .card-body-text { font-size:12.5px; color:#444; margin-bottom:8px; }
+    .board-card .card-author { font-size:11px; color:#888; }
+    .board-card .toggle-comments { font-size:11px; color:#3b82f6; cursor:pointer; background:none;border:none;margin-top:4px; }
+    .comments-panel { border-top:1px solid rgba(0,0,0,.12); margin-top:8px; padding-top:8px; }
+    .comment-item { font-size:11.5px; color:#333; margin-bottom:4px; }
+    .comment-form { display:flex; gap:4px; margin-top:6px; }
+    .comment-form input { flex:1; border:1px solid #ccc; border-radius:4px; padding:3px 6px; font-size:11.5px; }
+    .comment-form button { background:#3b82f6; color:#fff; border:none; border-radius:4px; padding:3px 8px; cursor:pointer; font-size:11px; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link active" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Group Dashboard</div>
+        <div class="page-sub">Shared board with draggable idea cards and comments.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">New Card</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="c-title" class="form-input" placeholder="Idea title" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Author</label><input id="c-author" class="form-input" placeholder="Your name" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Color</label>
+          <select id="c-color" class="form-select">
+            <option value="#fffacd">Yellow</option><option value="#d4f1f9">Blue</option>
+            <option value="#d5f5e3">Green</option><option value="#fde8d8">Orange</option><option value="#e8daef">Purple</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group mt-8"><label class="form-label">Body (optional)</label><textarea id="c-body" class="form-textarea" placeholder="Details�" style="min-height:52px"></textarea></div>
+      <button class="btn btn-primary" onclick="createCard()">Post Card</button>
+    </div>
+
+    <div class="board mt-16" id="board"></div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+let _cards = [];
+
+async function loadCards() {
+  try { const {cards} = await ApiClient.dashboard.list(); _cards = cards; renderCards(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function renderCards() {
+  const board = document.getElementById('board');
+  board.querySelectorAll('.board-card').forEach(el => el.remove());
+  _cards.forEach(card => mountCard(card));
+}
+
+function mountCard(card) {
+  const board = document.getElementById('board');
+  const el = document.createElement('div');
+  el.className = 'board-card';
+  el.style.left = card.x + 'px'; el.style.top = card.y + 'px';
+  el.style.background = card.color;
+  el.dataset.id = card.id;
+  el.innerHTML = `
+    <div class="card-head">
+      <strong>${escHtml(card.title)}</strong>
+      <button class="del-card" onclick="deleteCard('${card.id}')">?</button>
+    </div>
+    ${card.body ? `<div class="card-body-text">${escHtml(card.body)}</div>` : ''}
+    <div class="card-author">� ${escHtml(card.author)}</div>
+    <button class="toggle-comments" onclick="toggleComments('${card.id}')">?? ${card.comments.length} comment${card.comments.length!==1?'s':''}</button>
+    <div class="comments-panel" id="cp-${card.id}" style="display:none">
+      ${card.comments.map(c => `<div class="comment-item"><strong>${escHtml(c.author)}</strong>: ${escHtml(c.text)}</div>`).join('')}
+      <div class="comment-form">
+        <input id="cm-text-${card.id}" placeholder="Add comment�" />
+        <input id="cm-author-${card.id}" placeholder="Name" style="max-width:70px" />
+        <button onclick="addComment('${card.id}')">Post</button>
+      </div>
+    </div>`;
+  makeDraggable(el, card);
+  board.appendChild(el);
+}
+
+function makeDraggable(el, card) {
+  let ox=0, oy=0, moved=false;
+  el.addEventListener('mousedown', e => {
+    if (['INPUT','BUTTON','TEXTAREA'].includes(e.target.tagName)) return;
+    moved = false;
+    ox = e.clientX - card.x; oy = e.clientY - card.y;
+    const mm = ev => {
+      moved = true;
+      card.x = ev.clientX - ox; card.y = ev.clientY - oy;
+      el.style.left = card.x + 'px'; el.style.top = card.y + 'px';
+    };
+    const mu = () => {
+      window.removeEventListener('mousemove', mm);
+      window.removeEventListener('mouseup', mu);
+      if (moved) ApiClient.dashboard.update(card.id, {x: card.x, y: card.y}).catch(()=>{});
+    };
+    window.addEventListener('mousemove', mm);
+    window.addEventListener('mouseup', mu);
+  });
+}
+
+function toggleComments(id) {
+  const panel = document.getElementById('cp-' + id);
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+async function createCard() {
+  const title = document.getElementById('c-title').value.trim();
+  const author = document.getElementById('c-author').value.trim() || 'anonymous';
+  if (!title) { toast('Title required','error'); return; }
+  try {
+    const card = await ApiClient.dashboard.create({
+      title, body: document.getElementById('c-body').value.trim(),
+      color: document.getElementById('c-color').value, author,
+      x: 40 + Math.random()*200, y: 40 + Math.random()*200,
+    });
+    _cards.push(card); mountCard(card);
+    document.getElementById('c-title').value=''; document.getElementById('c-body').value='';
+    toast('Card posted','success');
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function deleteCard(id) {
+  try { await ApiClient.dashboard.remove(id); _cards = _cards.filter(c=>c.id!==id); renderCards(); toast('Card removed','success'); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function addComment(cardId) {
+  const text = document.getElementById('cm-text-'+cardId).value.trim();
+  const author = document.getElementById('cm-author-'+cardId).value.trim() || 'anonymous';
+  if (!text) return;
+  try {
+    await ApiClient.dashboard.addComment(cardId, {text, author});
+    toast('Comment added','success'); loadCards();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadCards();
+</script>
+</body></html>
+.Value -replace '\?+', '' </g,'&lt;').replace(/>/g,'&gt;'); }
 loadCards();
 </script>
 </body></html>

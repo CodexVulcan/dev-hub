@@ -5,8 +5,8 @@
   <title>Maintenance - DevHub</title>
   <link rel="stylesheet" href="../static/style.css" />
   <style>
-    .overdue-row td { background:rgba(231,76,60,.07); }
-    .overdue-badge { display:inline-block;padding:2px 7px;border-radius:99px;font-size:10.5px;font-weight:700;background:#3a0f0f;color:var(--danger);text-transform:uppercase;letter-spacing:.4px;margin-left:6px; }
+    .overdue-row td { background:var(--scarlet-dim); }
+    .overdue-badge { display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;background:var(--scarlet-dim);color:var(--scarlet);text-transform:uppercase;letter-spacing:.4px;margin-left:6px;border:1px solid var(--scarlet-mid); }
   </style>
 </head>
 <body>
@@ -35,7 +35,7 @@
   </nav>
   <main class="main-content">
         <div class="page-header">
-      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
       <div class="page-header-text">
         <div class="page-title">Maintenance</div>
         <div class="page-sub">Track recurring tasks. Overdue items highlighted automatically.</div>
@@ -76,7 +76,107 @@
       <div class="table-wrap">
         <table>
           <thead><tr><th>Title</th><th>Category</th><th>Due Date</th><th>Recurrence</th><th>Status</th><th>Actions</th></tr></thead>
-          <tbody id="tasks-tbody"><tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">Loading�</td></tr></tbody>
+          <tbody id="tasks-tbody"><tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+const CAT_LABELS = {dependency_update:'Dep Update',security_patch:'Security Patch',database_backup:'DB Backup',certificate_renewal:'Cert Renewal',code_audit:'Code Audit',other:'Other'};
+const CAT_BADGE  = {dependency_update:'badge-info',security_patch:'badge-danger',database_backup:'badge-accent',certificate_renewal:'badge-warning',code_audit:'badge-muted',other:'badge-muted'};
+
+async function loadTasks() {
+  try {
+    const {tasks} = await ApiClient.maintenance.list();
+    const tbody = document.getElementById('tasks-tbody');
+    const overdue = tasks.filter(t=>t.overdue);
+    const oc = document.getElementById('overdue-count');
+    if (overdue.length) { oc.textContent=`${overdue.length} overdue`; oc.style.display=''; }
+    else oc.style.display='none';
+    if (!tasks.length) { tbody.innerHTML='<tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">No tasks yet.</td></tr>'; return; }
+    tbody.innerHTML = tasks.map(t=>`
+      <tr class="${t.overdue?'overdue-row':''}">
+        <td><strong>${escHtml(t.title)}</strong> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .overdue-row td { background:var(--scarlet-dim); }
+    .overdue-badge { display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;background:var(--scarlet-dim);color:var(--scarlet);text-transform:uppercase;letter-spacing:.4px;margin-left:6px;border:1px solid var(--scarlet-mid); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link active" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Maintenance</div>
+        <div class="page-sub">Track recurring tasks. Overdue items highlighted automatically.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Add Task</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="m-title" class="form-input" placeholder="Update dependencies" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Category</label>
+          <select id="m-cat" class="form-select">
+            <option value="dependency_update">Dependency Update</option>
+            <option value="security_patch">Security Patch</option>
+            <option value="database_backup">Database Backup</option>
+            <option value="certificate_renewal">Certificate Renewal</option>
+            <option value="code_audit">Code Audit</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0"><label class="form-label">Due Date</label><input id="m-due" class="form-input" type="date" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Recurrence</label>
+          <select id="m-rec" class="form-select">
+            <option value="none">None</option><option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option><option value="quarterly">Quarterly</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;grid-column:span 2"><label class="form-label">Description (optional)</label><input id="m-desc" class="form-input" placeholder="What needs doing�" /></div>
+      </div>
+      <button class="btn btn-primary mt-16" onclick="createTask()">Add Task</button>
+    </div>
+
+    <div class="card mt-16">
+      <div class="flex justify-between items-center" style="margin-bottom:12px">
+        <div class="card-title" style="margin:0">Tasks</div>
+        <span id="overdue-count" class="badge badge-danger" style="display:none"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Due Date</th><th>Recurrence</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tasks-tbody"><tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">Loading...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -144,6 +244,615 @@ async function deleteTask(id) {
 document.getElementById('m-due').value = new Date().toISOString().split('T')[0];
 
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadTasks();
+</script>
+</body></html>
+.Value -replace '\?+', '' <span class="overdue-badge">overdue</span> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .overdue-row td { background:var(--scarlet-dim); }
+    .overdue-badge { display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;background:var(--scarlet-dim);color:var(--scarlet);text-transform:uppercase;letter-spacing:.4px;margin-left:6px;border:1px solid var(--scarlet-mid); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link active" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Maintenance</div>
+        <div class="page-sub">Track recurring tasks. Overdue items highlighted automatically.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Add Task</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="m-title" class="form-input" placeholder="Update dependencies" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Category</label>
+          <select id="m-cat" class="form-select">
+            <option value="dependency_update">Dependency Update</option>
+            <option value="security_patch">Security Patch</option>
+            <option value="database_backup">Database Backup</option>
+            <option value="certificate_renewal">Certificate Renewal</option>
+            <option value="code_audit">Code Audit</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0"><label class="form-label">Due Date</label><input id="m-due" class="form-input" type="date" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Recurrence</label>
+          <select id="m-rec" class="form-select">
+            <option value="none">None</option><option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option><option value="quarterly">Quarterly</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;grid-column:span 2"><label class="form-label">Description (optional)</label><input id="m-desc" class="form-input" placeholder="What needs doing�" /></div>
+      </div>
+      <button class="btn btn-primary mt-16" onclick="createTask()">Add Task</button>
+    </div>
+
+    <div class="card mt-16">
+      <div class="flex justify-between items-center" style="margin-bottom:12px">
+        <div class="card-title" style="margin:0">Tasks</div>
+        <span id="overdue-count" class="badge badge-danger" style="display:none"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Due Date</th><th>Recurrence</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tasks-tbody"><tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+const CAT_LABELS = {dependency_update:'Dep Update',security_patch:'Security Patch',database_backup:'DB Backup',certificate_renewal:'Cert Renewal',code_audit:'Code Audit',other:'Other'};
+const CAT_BADGE  = {dependency_update:'badge-info',security_patch:'badge-danger',database_backup:'badge-accent',certificate_renewal:'badge-warning',code_audit:'badge-muted',other:'badge-muted'};
+
+async function loadTasks() {
+  try {
+    const {tasks} = await ApiClient.maintenance.list();
+    const tbody = document.getElementById('tasks-tbody');
+    const overdue = tasks.filter(t=>t.overdue);
+    const oc = document.getElementById('overdue-count');
+    if (overdue.length) { oc.textContent=`${overdue.length} overdue`; oc.style.display=''; }
+    else oc.style.display='none';
+    if (!tasks.length) { tbody.innerHTML='<tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">No tasks yet.</td></tr>'; return; }
+    tbody.innerHTML = tasks.map(t=>`
+      <tr class="${t.overdue?'overdue-row':''}">
+        <td><strong>${escHtml(t.title)}</strong>${t.overdue?'<span class="overdue-badge">overdue</span>':''}
+            ${t.description?`<div class="text-muted text-sm">${escHtml(t.description)}</div>`:''}
+        </td>
+        <td><span class="badge ${CAT_BADGE[t.category]||'badge-muted'}">${CAT_LABELS[t.category]||t.category}</span></td>
+        <td class="${t.overdue?'':'text-muted'}" style="${t.overdue?'color:var(--danger);font-weight:600':''}">${t.due_date}</td>
+        <td class="text-muted text-sm">${t.recurrence}</td>
+        <td>
+          ${t.status==='completed'
+            ? '<span class="badge badge-success">Completed</span>'
+            : `<button class="btn btn-ghost btn-sm" onclick="completeTask(${t.id})">? Done</button>`}
+        </td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})">Delete</button></td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function createTask() {
+  const title    = document.getElementById('m-title').value.trim();
+  const due_date = document.getElementById('m-due').value;
+  if (!title || !due_date) { toast('Title and due date required','error'); return; }
+  try {
+    await ApiClient.maintenance.create({
+      title, description: document.getElementById('m-desc').value.trim(),
+      category: document.getElementById('m-cat').value,
+      due_date, recurrence: document.getElementById('m-rec').value,
+    });
+    document.getElementById('m-title').value=''; document.getElementById('m-desc').value='';
+    toast('Task added','success'); loadTasks();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function completeTask(id) {
+  try { await ApiClient.maintenance.update(id,{status:'completed'}); toast('Task completed','success'); loadTasks(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  try { await ApiClient.maintenance.remove(id); toast('Task deleted','success'); loadTasks(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+// default due date to today
+document.getElementById('m-due').value = new Date().toISOString().split('T')[0];
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadTasks();
+</script>
+</body></html>
+.Value -replace '\?+', '' <div class="text-muted text-sm">${escHtml(t.description)}</div>`:''}
+        </td>
+        <td><span class="badge ${CAT_BADGE[t.category]||'badge-muted'}">${CAT_LABELS[t.category]||t.category}</span></td>
+        <td class="${t.overdue?'':'text-muted'}" style="${t.overdue?'color:var(--danger);font-weight:600':''}">${t.due_date}</td>
+        <td class="text-muted text-sm">${t.recurrence}</td>
+        <td> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .overdue-row td { background:var(--scarlet-dim); }
+    .overdue-badge { display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;background:var(--scarlet-dim);color:var(--scarlet);text-transform:uppercase;letter-spacing:.4px;margin-left:6px;border:1px solid var(--scarlet-mid); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link active" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Maintenance</div>
+        <div class="page-sub">Track recurring tasks. Overdue items highlighted automatically.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Add Task</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="m-title" class="form-input" placeholder="Update dependencies" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Category</label>
+          <select id="m-cat" class="form-select">
+            <option value="dependency_update">Dependency Update</option>
+            <option value="security_patch">Security Patch</option>
+            <option value="database_backup">Database Backup</option>
+            <option value="certificate_renewal">Certificate Renewal</option>
+            <option value="code_audit">Code Audit</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0"><label class="form-label">Due Date</label><input id="m-due" class="form-input" type="date" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Recurrence</label>
+          <select id="m-rec" class="form-select">
+            <option value="none">None</option><option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option><option value="quarterly">Quarterly</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;grid-column:span 2"><label class="form-label">Description (optional)</label><input id="m-desc" class="form-input" placeholder="What needs doing�" /></div>
+      </div>
+      <button class="btn btn-primary mt-16" onclick="createTask()">Add Task</button>
+    </div>
+
+    <div class="card mt-16">
+      <div class="flex justify-between items-center" style="margin-bottom:12px">
+        <div class="card-title" style="margin:0">Tasks</div>
+        <span id="overdue-count" class="badge badge-danger" style="display:none"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Due Date</th><th>Recurrence</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tasks-tbody"><tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+const CAT_LABELS = {dependency_update:'Dep Update',security_patch:'Security Patch',database_backup:'DB Backup',certificate_renewal:'Cert Renewal',code_audit:'Code Audit',other:'Other'};
+const CAT_BADGE  = {dependency_update:'badge-info',security_patch:'badge-danger',database_backup:'badge-accent',certificate_renewal:'badge-warning',code_audit:'badge-muted',other:'badge-muted'};
+
+async function loadTasks() {
+  try {
+    const {tasks} = await ApiClient.maintenance.list();
+    const tbody = document.getElementById('tasks-tbody');
+    const overdue = tasks.filter(t=>t.overdue);
+    const oc = document.getElementById('overdue-count');
+    if (overdue.length) { oc.textContent=`${overdue.length} overdue`; oc.style.display=''; }
+    else oc.style.display='none';
+    if (!tasks.length) { tbody.innerHTML='<tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">No tasks yet.</td></tr>'; return; }
+    tbody.innerHTML = tasks.map(t=>`
+      <tr class="${t.overdue?'overdue-row':''}">
+        <td><strong>${escHtml(t.title)}</strong>${t.overdue?'<span class="overdue-badge">overdue</span>':''}
+            ${t.description?`<div class="text-muted text-sm">${escHtml(t.description)}</div>`:''}
+        </td>
+        <td><span class="badge ${CAT_BADGE[t.category]||'badge-muted'}">${CAT_LABELS[t.category]||t.category}</span></td>
+        <td class="${t.overdue?'':'text-muted'}" style="${t.overdue?'color:var(--danger);font-weight:600':''}">${t.due_date}</td>
+        <td class="text-muted text-sm">${t.recurrence}</td>
+        <td>
+          ${t.status==='completed'
+            ? '<span class="badge badge-success">Completed</span>'
+            : `<button class="btn btn-ghost btn-sm" onclick="completeTask(${t.id})">? Done</button>`}
+        </td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})">Delete</button></td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function createTask() {
+  const title    = document.getElementById('m-title').value.trim();
+  const due_date = document.getElementById('m-due').value;
+  if (!title || !due_date) { toast('Title and due date required','error'); return; }
+  try {
+    await ApiClient.maintenance.create({
+      title, description: document.getElementById('m-desc').value.trim(),
+      category: document.getElementById('m-cat').value,
+      due_date, recurrence: document.getElementById('m-rec').value,
+    });
+    document.getElementById('m-title').value=''; document.getElementById('m-desc').value='';
+    toast('Task added','success'); loadTasks();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function completeTask(id) {
+  try { await ApiClient.maintenance.update(id,{status:'completed'}); toast('Task completed','success'); loadTasks(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  try { await ApiClient.maintenance.remove(id); toast('Task deleted','success'); loadTasks(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+// default due date to today
+document.getElementById('m-due').value = new Date().toISOString().split('T')[0];
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadTasks();
+</script>
+</body></html>
+.Value -replace '\?+', '' <span class="badge badge-success">Completed</span>'
+            : `<button class="btn btn-ghost btn-sm" onclick="completeTask(${t.id})"> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .overdue-row td { background:var(--scarlet-dim); }
+    .overdue-badge { display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;background:var(--scarlet-dim);color:var(--scarlet);text-transform:uppercase;letter-spacing:.4px;margin-left:6px;border:1px solid var(--scarlet-mid); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link active" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Maintenance</div>
+        <div class="page-sub">Track recurring tasks. Overdue items highlighted automatically.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Add Task</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="m-title" class="form-input" placeholder="Update dependencies" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Category</label>
+          <select id="m-cat" class="form-select">
+            <option value="dependency_update">Dependency Update</option>
+            <option value="security_patch">Security Patch</option>
+            <option value="database_backup">Database Backup</option>
+            <option value="certificate_renewal">Certificate Renewal</option>
+            <option value="code_audit">Code Audit</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0"><label class="form-label">Due Date</label><input id="m-due" class="form-input" type="date" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Recurrence</label>
+          <select id="m-rec" class="form-select">
+            <option value="none">None</option><option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option><option value="quarterly">Quarterly</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;grid-column:span 2"><label class="form-label">Description (optional)</label><input id="m-desc" class="form-input" placeholder="What needs doing�" /></div>
+      </div>
+      <button class="btn btn-primary mt-16" onclick="createTask()">Add Task</button>
+    </div>
+
+    <div class="card mt-16">
+      <div class="flex justify-between items-center" style="margin-bottom:12px">
+        <div class="card-title" style="margin:0">Tasks</div>
+        <span id="overdue-count" class="badge badge-danger" style="display:none"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Due Date</th><th>Recurrence</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tasks-tbody"><tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+const CAT_LABELS = {dependency_update:'Dep Update',security_patch:'Security Patch',database_backup:'DB Backup',certificate_renewal:'Cert Renewal',code_audit:'Code Audit',other:'Other'};
+const CAT_BADGE  = {dependency_update:'badge-info',security_patch:'badge-danger',database_backup:'badge-accent',certificate_renewal:'badge-warning',code_audit:'badge-muted',other:'badge-muted'};
+
+async function loadTasks() {
+  try {
+    const {tasks} = await ApiClient.maintenance.list();
+    const tbody = document.getElementById('tasks-tbody');
+    const overdue = tasks.filter(t=>t.overdue);
+    const oc = document.getElementById('overdue-count');
+    if (overdue.length) { oc.textContent=`${overdue.length} overdue`; oc.style.display=''; }
+    else oc.style.display='none';
+    if (!tasks.length) { tbody.innerHTML='<tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">No tasks yet.</td></tr>'; return; }
+    tbody.innerHTML = tasks.map(t=>`
+      <tr class="${t.overdue?'overdue-row':''}">
+        <td><strong>${escHtml(t.title)}</strong>${t.overdue?'<span class="overdue-badge">overdue</span>':''}
+            ${t.description?`<div class="text-muted text-sm">${escHtml(t.description)}</div>`:''}
+        </td>
+        <td><span class="badge ${CAT_BADGE[t.category]||'badge-muted'}">${CAT_LABELS[t.category]||t.category}</span></td>
+        <td class="${t.overdue?'':'text-muted'}" style="${t.overdue?'color:var(--danger);font-weight:600':''}">${t.due_date}</td>
+        <td class="text-muted text-sm">${t.recurrence}</td>
+        <td>
+          ${t.status==='completed'
+            ? '<span class="badge badge-success">Completed</span>'
+            : `<button class="btn btn-ghost btn-sm" onclick="completeTask(${t.id})">? Done</button>`}
+        </td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})">Delete</button></td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function createTask() {
+  const title    = document.getElementById('m-title').value.trim();
+  const due_date = document.getElementById('m-due').value;
+  if (!title || !due_date) { toast('Title and due date required','error'); return; }
+  try {
+    await ApiClient.maintenance.create({
+      title, description: document.getElementById('m-desc').value.trim(),
+      category: document.getElementById('m-cat').value,
+      due_date, recurrence: document.getElementById('m-rec').value,
+    });
+    document.getElementById('m-title').value=''; document.getElementById('m-desc').value='';
+    toast('Task added','success'); loadTasks();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function completeTask(id) {
+  try { await ApiClient.maintenance.update(id,{status:'completed'}); toast('Task completed','success'); loadTasks(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  try { await ApiClient.maintenance.remove(id); toast('Task deleted','success'); loadTasks(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+// default due date to today
+document.getElementById('m-due').value = new Date().toISOString().split('T')[0];
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadTasks();
+</script>
+</body></html>
+.Value -replace '\?+', '' </button>`}
+        </td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})">Delete</button></td>
+      </tr> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .overdue-row td { background:var(--scarlet-dim); }
+    .overdue-badge { display:inline-block;padding:2px 7px;border-radius:99px;font-size:10px;font-weight:700;background:var(--scarlet-dim);color:var(--scarlet);text-transform:uppercase;letter-spacing:.4px;margin-left:6px;border:1px solid var(--scarlet-mid); }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link active" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon ochre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Maintenance</div>
+        <div class="page-sub">Track recurring tasks. Overdue items highlighted automatically.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Add Task</div>
+      <div class="grid-3 gap-12">
+        <div class="form-group" style="margin:0"><label class="form-label">Title</label><input id="m-title" class="form-input" placeholder="Update dependencies" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Category</label>
+          <select id="m-cat" class="form-select">
+            <option value="dependency_update">Dependency Update</option>
+            <option value="security_patch">Security Patch</option>
+            <option value="database_backup">Database Backup</option>
+            <option value="certificate_renewal">Certificate Renewal</option>
+            <option value="code_audit">Code Audit</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0"><label class="form-label">Due Date</label><input id="m-due" class="form-input" type="date" /></div>
+        <div class="form-group" style="margin:0"><label class="form-label">Recurrence</label>
+          <select id="m-rec" class="form-select">
+            <option value="none">None</option><option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option><option value="quarterly">Quarterly</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin:0;grid-column:span 2"><label class="form-label">Description (optional)</label><input id="m-desc" class="form-input" placeholder="What needs doing�" /></div>
+      </div>
+      <button class="btn btn-primary mt-16" onclick="createTask()">Add Task</button>
+    </div>
+
+    <div class="card mt-16">
+      <div class="flex justify-between items-center" style="margin-bottom:12px">
+        <div class="card-title" style="margin:0">Tasks</div>
+        <span id="overdue-count" class="badge badge-danger" style="display:none"></span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Category</th><th>Due Date</th><th>Recurrence</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="tasks-tbody"><tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+const CAT_LABELS = {dependency_update:'Dep Update',security_patch:'Security Patch',database_backup:'DB Backup',certificate_renewal:'Cert Renewal',code_audit:'Code Audit',other:'Other'};
+const CAT_BADGE  = {dependency_update:'badge-info',security_patch:'badge-danger',database_backup:'badge-accent',certificate_renewal:'badge-warning',code_audit:'badge-muted',other:'badge-muted'};
+
+async function loadTasks() {
+  try {
+    const {tasks} = await ApiClient.maintenance.list();
+    const tbody = document.getElementById('tasks-tbody');
+    const overdue = tasks.filter(t=>t.overdue);
+    const oc = document.getElementById('overdue-count');
+    if (overdue.length) { oc.textContent=`${overdue.length} overdue`; oc.style.display=''; }
+    else oc.style.display='none';
+    if (!tasks.length) { tbody.innerHTML='<tr><td colspan="6" class="text-muted" style="text-align:center;padding:24px">No tasks yet.</td></tr>'; return; }
+    tbody.innerHTML = tasks.map(t=>`
+      <tr class="${t.overdue?'overdue-row':''}">
+        <td><strong>${escHtml(t.title)}</strong>${t.overdue?'<span class="overdue-badge">overdue</span>':''}
+            ${t.description?`<div class="text-muted text-sm">${escHtml(t.description)}</div>`:''}
+        </td>
+        <td><span class="badge ${CAT_BADGE[t.category]||'badge-muted'}">${CAT_LABELS[t.category]||t.category}</span></td>
+        <td class="${t.overdue?'':'text-muted'}" style="${t.overdue?'color:var(--danger);font-weight:600':''}">${t.due_date}</td>
+        <td class="text-muted text-sm">${t.recurrence}</td>
+        <td>
+          ${t.status==='completed'
+            ? '<span class="badge badge-success">Completed</span>'
+            : `<button class="btn btn-ghost btn-sm" onclick="completeTask(${t.id})">? Done</button>`}
+        </td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteTask(${t.id})">Delete</button></td>
+      </tr>`).join('');
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function createTask() {
+  const title    = document.getElementById('m-title').value.trim();
+  const due_date = document.getElementById('m-due').value;
+  if (!title || !due_date) { toast('Title and due date required','error'); return; }
+  try {
+    await ApiClient.maintenance.create({
+      title, description: document.getElementById('m-desc').value.trim(),
+      category: document.getElementById('m-cat').value,
+      due_date, recurrence: document.getElementById('m-rec').value,
+    });
+    document.getElementById('m-title').value=''; document.getElementById('m-desc').value='';
+    toast('Task added','success'); loadTasks();
+  } catch(e) { toast(e.message,'error'); }
+}
+
+async function completeTask(id) {
+  try { await ApiClient.maintenance.update(id,{status:'completed'}); toast('Task completed','success'); loadTasks(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function deleteTask(id) {
+  if (!confirm('Delete this task?')) return;
+  try { await ApiClient.maintenance.remove(id); toast('Task deleted','success'); loadTasks(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+// default due date to today
+document.getElementById('m-due').value = new Date().toISOString().split('T')[0];
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadTasks();
+</script>
+</body></html>
+.Value -replace '\?+', '' </g,'&lt;').replace(/>/g,'&gt;'); }
 loadTasks();
 </script>
 </body></html>

@@ -48,7 +48,108 @@
   </nav>
   <main class="main-content">
         <div class="page-header">
-      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></div>
+      <div class="page-header-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Project Mindmap</div>
+        <div class="page-sub">Interactive node-graph of your project structure.</div>
+      </div>
+    </div>
+
+    <div class="grid-2 gap-12">
+      <div class="card">
+        <div class="card-title">Add Node</div>
+        <div class="form-group"><label class="form-label">ID (unique)</label><input id="n-id" class="form-input" placeholder="auth-service" /></div>
+        <div class="form-group"><label class="form-label">Label</label><input id="n-label" class="form-input" placeholder="Auth Service" /></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select id="n-type" class="form-select"><option value="module">Module</option><option value="service">Service</option><option value="database">Database</option><option value="external">External</option><option value="component">Component</option></select>
+        </div>
+        <button class="btn btn-primary" onclick="addNode()">Add Node</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Add Edge</div>
+        <div class="form-group"><label class="form-label">From Node ID</label><input id="e-src" class="form-input" placeholder="auth-service" /></div>
+        <div class="form-group"><label class="form-label">To Node ID</label><input id="e-tgt" class="form-input" placeholder="database" /></div>
+        <div class="form-group"><label class="form-label">Label (optional)</label><input id="e-lbl" class="form-input" placeholder="uses" /></div>
+        <button class="btn btn-primary" onclick="addEdge()">Add Edge</button>
+      </div>
+    </div>
+
+    <div class="canvas-wrap mt-16" id="canvas">
+      <svg class="mm-svg" id="mm-svg"></svg>
+    </div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+let _graph = {nodes:[], edges:[]};
+
+async function loadGraph() {
+  try { _graph = await ApiClient.mindmap.get(); renderGraph(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function renderGraph() {
+  const canvas = document.getElementById('canvas');
+  const svg = document.getElementById('mm-svg');
+  // remove old nodes
+  canvas.querySelectorAll('.mm-node').forEach(el => el.remove());
+  // draw edges
+  svg.innerHTML = _graph.edges.map(e => {
+    const src = _graph.nodes.find(n => n.id === e.source);
+    const tgt = _graph.nodes.find(n => n.id === e.target);
+    if (!src || !tgt) return '';
+    const x1=src.x+60, y1=src.y+18, x2=tgt.x+60, y2=tgt.y+18;
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--border)" stroke-width="2" marker-end="url(#arr)"/> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mindmap - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .canvas-wrap { position:relative; width:100%; height:600px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .mm-svg { position:absolute; top:0;left:0;width:100%;height:100%;pointer-events:none; }
+    .mm-node {
+      position:absolute; padding:8px 14px; border-radius:var(--radius); font-size:13px; font-weight:600;
+      cursor:grab; user-select:none; border:2px solid transparent; white-space:nowrap;
+      transition:box-shadow .15s;
+    }
+    .mm-node:active { cursor:grabbing; }
+    .mm-node.type-module    { background:#1e3a6e; border-color:var(--accent); color:#93c5fd; }
+    .mm-node.type-service   { background:#1a3d2b; border-color:var(--success); color:#6ee7b7; }
+    .mm-node.type-database  { background:#3a0f0f; border-color:var(--danger); color:#fca5a5; }
+    .mm-node.type-external  { background:#3a2a0a; border-color:var(--warning); color:#fcd34d; }
+    .mm-node.type-component { background:#2e2250; border-color:#a78bfa; color:#c4b5fd; }
+    .mm-node .del-btn { margin-left:8px; opacity:0; font-size:11px; cursor:pointer; color:var(--danger); transition:opacity .15s; }
+    .mm-node:hover .del-btn { opacity:1; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link active" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></div>
       <div class="page-header-text">
         <div class="page-title">Project Mindmap</div>
         <div class="page-sub">Interactive node-graph of your project structure.</div>
@@ -108,6 +209,266 @@ function renderGraph() {
     el.className = `mm-node type-${n.type}`;
     el.style.left = n.x + 'px'; el.style.top = n.y + 'px';
     el.innerHTML = `${escHtml(n.label)}<span class="del-btn" onclick="removeNode('${n.id}')">?</span>`;
+    makeDraggable(el, n);
+    canvas.appendChild(el);
+  });
+}
+
+function makeDraggable(el, node) {
+  let ox=0, oy=0;
+  el.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('del-btn')) return;
+    ox = e.clientX - node.x; oy = e.clientY - node.y;
+    const mm = ev => {
+      node.x = ev.clientX - ox; node.y = ev.clientY - oy;
+      el.style.left = node.x + 'px'; el.style.top = node.y + 'px';
+      renderEdges();
+    };
+    const mu = () => {
+      window.removeEventListener('mousemove', mm);
+      window.removeEventListener('mouseup', mu);
+      ApiClient.mindmap.updateNode(node.id, {x: node.x, y: node.y}).catch(()=>{});
+    };
+    window.addEventListener('mousemove', mm);
+    window.addEventListener('mouseup', mu);
+  });
+}
+
+function renderEdges() {
+  const svg = document.getElementById('mm-svg');
+  svg.innerHTML = _graph.edges.map(e => {
+    const src = _graph.nodes.find(n => n.id === e.source);
+    const tgt = _graph.nodes.find(n => n.id === e.target);
+    if (!src || !tgt) return '';
+    const x1=src.x+60,y1=src.y+18,x2=tgt.x+60,y2=tgt.y+18;
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--border)" stroke-width="2" marker-end="url(#arr)"/>`;
+  }).join('') + `<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--border)"/></marker></defs>`;
+}
+
+async function addNode() {
+  const id = document.getElementById('n-id').value.trim();
+  const label = document.getElementById('n-label').value.trim();
+  const type = document.getElementById('n-type').value;
+  if (!id || !label) { toast('ID and label required','error'); return; }
+  const x = 60 + Math.random() * 400, y = 60 + Math.random() * 400;
+  try { await ApiClient.mindmap.addNode({id,label,type,x,y}); toast('Node added','success'); loadGraph(); document.getElementById('n-id').value=''; document.getElementById('n-label').value=''; }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function addEdge() {
+  const source = document.getElementById('e-src').value.trim();
+  const target = document.getElementById('e-tgt').value.trim();
+  const label  = document.getElementById('e-lbl').value.trim();
+  if (!source || !target) { toast('Source and target required','error'); return; }
+  try {
+    await ApiClient.mindmap.addEdge({source,target,label});
+    toast('Edge added','success');
+    loadGraph();
+    document.getElementById('e-src').value='';
+    document.getElementById('e-tgt').value='';
+    document.getElementById('e-lbl').value='';
+  }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function removeNode(id) {
+  try { await ApiClient.mindmap.removeNode(id); toast('Node removed','success'); loadGraph(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadGraph();
+</script>
+</body></html>
+.Value -replace '\?+', '' <text x="${(x1+x2)/2}" y="${(y1+y2)/2-6}" fill="var(--text-muted)" font-size="11" text-anchor="middle">${escHtml(e.label)}</text>` : ''}`;
+  }).join('') + `<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--border)"/></marker></defs>`;
+  // draw nodes
+  _graph.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = `mm-node type-${n.type}`;
+    el.style.left = n.x + 'px'; el.style.top = n.y + 'px';
+    el.innerHTML = `${escHtml(n.label)}<span class="del-btn" onclick="removeNode('${n.id}')"> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mindmap - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    .canvas-wrap { position:relative; width:100%; height:600px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+    .mm-svg { position:absolute; top:0;left:0;width:100%;height:100%;pointer-events:none; }
+    .mm-node {
+      position:absolute; padding:8px 14px; border-radius:var(--radius); font-size:13px; font-weight:600;
+      cursor:grab; user-select:none; border:2px solid transparent; white-space:nowrap;
+      transition:box-shadow .15s;
+    }
+    .mm-node:active { cursor:grabbing; }
+    .mm-node.type-module    { background:#1e3a6e; border-color:var(--accent); color:#93c5fd; }
+    .mm-node.type-service   { background:#1a3d2b; border-color:var(--success); color:#6ee7b7; }
+    .mm-node.type-database  { background:#3a0f0f; border-color:var(--danger); color:#fca5a5; }
+    .mm-node.type-external  { background:#3a2a0a; border-color:var(--warning); color:#fcd34d; }
+    .mm-node.type-component { background:#2e2250; border-color:#a78bfa; color:#c4b5fd; }
+    .mm-node .del-btn { margin-left:8px; opacity:0; font-size:11px; cursor:pointer; color:var(--danger); transition:opacity .15s; }
+    .mm-node:hover .del-btn { opacity:1; }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link active" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Project Mindmap</div>
+        <div class="page-sub">Interactive node-graph of your project structure.</div>
+      </div>
+    </div>
+
+    <div class="grid-2 gap-12">
+      <div class="card">
+        <div class="card-title">Add Node</div>
+        <div class="form-group"><label class="form-label">ID (unique)</label><input id="n-id" class="form-input" placeholder="auth-service" /></div>
+        <div class="form-group"><label class="form-label">Label</label><input id="n-label" class="form-input" placeholder="Auth Service" /></div>
+        <div class="form-group"><label class="form-label">Type</label>
+          <select id="n-type" class="form-select"><option value="module">Module</option><option value="service">Service</option><option value="database">Database</option><option value="external">External</option><option value="component">Component</option></select>
+        </div>
+        <button class="btn btn-primary" onclick="addNode()">Add Node</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Add Edge</div>
+        <div class="form-group"><label class="form-label">From Node ID</label><input id="e-src" class="form-input" placeholder="auth-service" /></div>
+        <div class="form-group"><label class="form-label">To Node ID</label><input id="e-tgt" class="form-input" placeholder="database" /></div>
+        <div class="form-group"><label class="form-label">Label (optional)</label><input id="e-lbl" class="form-input" placeholder="uses" /></div>
+        <button class="btn btn-primary" onclick="addEdge()">Add Edge</button>
+      </div>
+    </div>
+
+    <div class="canvas-wrap mt-16" id="canvas">
+      <svg class="mm-svg" id="mm-svg"></svg>
+    </div>
+  </main>
+</div>
+<script src="../static/app.js"></script><script src="../static/api-client.js"></script>
+<script>
+let _graph = {nodes:[], edges:[]};
+
+async function loadGraph() {
+  try { _graph = await ApiClient.mindmap.get(); renderGraph(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function renderGraph() {
+  const canvas = document.getElementById('canvas');
+  const svg = document.getElementById('mm-svg');
+  // remove old nodes
+  canvas.querySelectorAll('.mm-node').forEach(el => el.remove());
+  // draw edges
+  svg.innerHTML = _graph.edges.map(e => {
+    const src = _graph.nodes.find(n => n.id === e.source);
+    const tgt = _graph.nodes.find(n => n.id === e.target);
+    if (!src || !tgt) return '';
+    const x1=src.x+60, y1=src.y+18, x2=tgt.x+60, y2=tgt.y+18;
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--border)" stroke-width="2" marker-end="url(#arr)"/>
+            ${e.label ? `<text x="${(x1+x2)/2}" y="${(y1+y2)/2-6}" fill="var(--text-muted)" font-size="11" text-anchor="middle">${escHtml(e.label)}</text>` : ''}`;
+  }).join('') + `<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--border)"/></marker></defs>`;
+  // draw nodes
+  _graph.nodes.forEach(n => {
+    const el = document.createElement('div');
+    el.className = `mm-node type-${n.type}`;
+    el.style.left = n.x + 'px'; el.style.top = n.y + 'px';
+    el.innerHTML = `${escHtml(n.label)}<span class="del-btn" onclick="removeNode('${n.id}')">?</span>`;
+    makeDraggable(el, n);
+    canvas.appendChild(el);
+  });
+}
+
+function makeDraggable(el, node) {
+  let ox=0, oy=0;
+  el.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('del-btn')) return;
+    ox = e.clientX - node.x; oy = e.clientY - node.y;
+    const mm = ev => {
+      node.x = ev.clientX - ox; node.y = ev.clientY - oy;
+      el.style.left = node.x + 'px'; el.style.top = node.y + 'px';
+      renderEdges();
+    };
+    const mu = () => {
+      window.removeEventListener('mousemove', mm);
+      window.removeEventListener('mouseup', mu);
+      ApiClient.mindmap.updateNode(node.id, {x: node.x, y: node.y}).catch(()=>{});
+    };
+    window.addEventListener('mousemove', mm);
+    window.addEventListener('mouseup', mu);
+  });
+}
+
+function renderEdges() {
+  const svg = document.getElementById('mm-svg');
+  svg.innerHTML = _graph.edges.map(e => {
+    const src = _graph.nodes.find(n => n.id === e.source);
+    const tgt = _graph.nodes.find(n => n.id === e.target);
+    if (!src || !tgt) return '';
+    const x1=src.x+60,y1=src.y+18,x2=tgt.x+60,y2=tgt.y+18;
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--border)" stroke-width="2" marker-end="url(#arr)"/>`;
+  }).join('') + `<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="var(--border)"/></marker></defs>`;
+}
+
+async function addNode() {
+  const id = document.getElementById('n-id').value.trim();
+  const label = document.getElementById('n-label').value.trim();
+  const type = document.getElementById('n-type').value;
+  if (!id || !label) { toast('ID and label required','error'); return; }
+  const x = 60 + Math.random() * 400, y = 60 + Math.random() * 400;
+  try { await ApiClient.mindmap.addNode({id,label,type,x,y}); toast('Node added','success'); loadGraph(); document.getElementById('n-id').value=''; document.getElementById('n-label').value=''; }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function addEdge() {
+  const source = document.getElementById('e-src').value.trim();
+  const target = document.getElementById('e-tgt').value.trim();
+  const label  = document.getElementById('e-lbl').value.trim();
+  if (!source || !target) { toast('Source and target required','error'); return; }
+  try {
+    await ApiClient.mindmap.addEdge({source,target,label});
+    toast('Edge added','success');
+    loadGraph();
+    document.getElementById('e-src').value='';
+    document.getElementById('e-tgt').value='';
+    document.getElementById('e-lbl').value='';
+  }
+  catch(e) { toast(e.message,'error'); }
+}
+
+async function removeNode(id) {
+  try { await ApiClient.mindmap.removeNode(id); toast('Node removed','success'); loadGraph(); }
+  catch(e) { toast(e.message,'error'); }
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+loadGraph();
+</script>
+</body></html>
+.Value -replace '\?+', '' </span>`;
     makeDraggable(el, n);
     canvas.appendChild(el);
   });

@@ -64,7 +64,7 @@
 
   <main class="main-content">
         <div class="page-header">
-      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="page-header-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <div class="page-header-text">
         <div class="page-title">Team Pulse</div>
         <div class="page-sub">Live platform health score across all 10 modules.</div>
@@ -74,8 +74,8 @@
       </div>
     </div>
 
-    <!-- Loading state -->
-    <div id="pulse-loading" class="card mt-16" style="text-align:center;padding:40px">
+    <!-- Loading...state -->
+    <div id="pulse-Loading..." class="card mt-16" style="text-align:center;padding:40px">
       <div class="text-muted">Computing Team Pulse...</div>
     </div>
 
@@ -146,7 +146,7 @@ const FEED_COLORS = {
 };
 
 async function loadPulse() {
-  document.getElementById('pulse-loading').style.display = '';
+  document.getElementById('pulse-Loading...style.display = '';
   document.getElementById('pulse-content').style.display = 'none';
 
   try {
@@ -155,11 +155,172 @@ async function loadPulse() {
     renderDimensions(data.dimensions);
     renderFeed(data.feed || []);
 
-    document.getElementById('pulse-loading').style.display = 'none';
+    document.getElementById('pulse-Loading...style.display = 'none';
     document.getElementById('pulse-content').style.display = '';
   } catch(e) {
-    document.getElementById('pulse-loading').innerHTML =
-      `<div class="badge badge-danger">Error loading pulse: ${e.message}</div>`;
+    document.getElementById('pulse-Loading...innerHTML =
+      `<div class="badge badge-danger">Error Loading...pulse: ${e.message}</div> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Pulse - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    /* Score ring */
+    .score-ring-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .ring-svg { transform:rotate(-90deg); }
+    .ring-bg   { fill:none; stroke:var(--surface-2); stroke-width:10; }
+    .ring-fill { fill:none; stroke-width:10; stroke-linecap:round; transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+    .score-label { font-size:38px; font-weight:900; margin-top:-8px; }
+    .grade-label { font-size:16px; font-weight:700; letter-spacing:2px; }
+
+    /* Dimension bars */
+    .dim-bar-track { height:7px; background:var(--surface-2); border-radius:99px; overflow:hidden; margin-top:5px; }
+    .dim-bar-fill  { height:100%; border-radius:99px; transition:width 1s ease .2s; }
+
+    /* Feed */
+    .feed-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border); }
+    .feed-item:last-child { border-bottom:none; }
+    .feed-dot  { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+    .dot-success  { background:var(--success); }
+    .dot-critical { background:var(--danger); }
+    .dot-warning  { background:var(--warning); }
+    .dot-info     { background:var(--accent); }
+
+    /* Health grade colours */
+    .grade-A { color:var(--success); }
+    .grade-B { color:#4ade80; }
+    .grade-C { color:var(--warning); }
+    .grade-D { color:#f97316; }
+    .grade-F { color:var(--danger); }
+
+    .pulse-grid { display:grid; grid-template-columns:280px 1fr; gap:20px; align-items:start; }
+    @media (max-width:700px) { .pulse-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link active" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Team Pulse</div>
+        <div class="page-sub">Live platform health score across all 10 modules.</div>
+      </div>
+    </div>
+        <button class="btn btn-primary" onclick="loadPulse()">&#8635; Refresh</button>
+      </div>
+    </div>
+
+    <!-- Loading...state -->
+    <div id="pulse-Loading..." class="card mt-16" style="text-align:center;padding:40px">
+      <div class="text-muted">Computing Team Pulse...</div>
+    </div>
+
+    <!-- Main pulse content (hidden until loaded) -->
+    <div id="pulse-content" style="display:none">
+
+      <!-- Score + dimensions -->
+      <div class="pulse-grid mt-16">
+
+        <!-- Ring score -->
+        <div class="card score-ring-wrap" style="padding:32px 20px">
+          <svg class="ring-svg" width="160" height="160" viewBox="0 0 160 160">
+            <circle class="ring-bg" cx="80" cy="80" r="66"/>
+            <circle class="ring-fill" id="ring-fill" cx="80" cy="80" r="66"
+              stroke="#4f8ef7"
+              stroke-dasharray="414.69"
+              stroke-dashoffset="414.69"/>
+          </svg>
+          <div class="score-label" id="score-label">--</div>
+          <div class="grade-label" id="grade-label">--</div>
+          <div class="text-muted text-sm mt-8" id="computed-at"></div>
+        </div>
+
+        <!-- Dimension breakdown -->
+        <div class="card">
+          <div class="card-title">Score Breakdown</div>
+          <div id="dimensions"></div>
+        </div>
+      </div>
+
+      <!-- Activity feed -->
+      <div class="card mt-16">
+        <div class="flex justify-between items-center" style="margin-bottom:12px">
+          <div class="card-title" style="margin:0">Activity Feed</div>
+          <span id="feed-count" class="badge badge-muted"></span>
+        </div>
+        <div id="feed-list"></div>
+      </div>
+
+    </div><!-- end pulse-content -->
+  </main>
+</div>
+
+<script src="../static/app.js"></script>
+<script src="../static/api-client.js"></script>
+<script>
+const CIRCUMFERENCE = 2 * Math.PI * 66; // 414.69
+
+const DIM_COLORS = {
+  pipeline:    '#4f8ef7',
+  quality:     '#2ecc71',
+  team:        '#a78bfa',
+  maintenance: '#f39c12',
+  activity:    '#3498db',
+};
+const DIM_LABELS = {
+  pipeline:    'Pipeline Health',
+  quality:     'Code Quality',
+  team:        'Team Completeness',
+  maintenance: 'Maintenance Compliance',
+  activity:    'Team Activity',
+};
+const FEED_COLORS = {
+  success:  'dot-success',
+  critical: 'dot-critical',
+  warning:  'dot-warning',
+  info:     'dot-info',
+};
+
+async function loadPulse() {
+  document.getElementById('pulse-Loading...style.display = '';
+  document.getElementById('pulse-content').style.display = 'none';
+
+  try {
+    const data = await ApiClient.pulse.get();
+    renderScore(data);
+    renderDimensions(data.dimensions);
+    renderFeed(data.feed || []);
+
+    document.getElementById('pulse-Loading...style.display = 'none';
+    document.getElementById('pulse-content').style.display = '';
+  } catch(e) {
+    document.getElementById('pulse-Loading...innerHTML =
+      `<div class="badge badge-danger">Error Loading...pulse: ${e.message}</div>`;
   }
 }
 
@@ -222,6 +383,308 @@ function renderFeed(events) {
       <div style="flex:1">
         <div style="font-size:13.5px">${escHtml(ev.message)}</div>
         <div class="text-muted text-sm">${ev.type} &middot; ${ev.timestamp ? timeAgo(ev.timestamp) : 'just now'}</div>
+      </div>
+    </div>`).join('');
+}
+
+function timeAgo(isoStr) {
+  const diff = Date.now() - new Date(isoStr).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const hours = Math.floor(mins / 60);
+  const days  = Math.floor(hours / 24);
+  if (days > 0)  return days  + 'd ago';
+  if (hours > 0) return hours + 'h ago';
+  if (mins > 0)  return mins  + 'm ago';
+  return 'just now';
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Load on page open and auto-refresh every 30 seconds
+loadPulse();
+setInterval(loadPulse, 30000);
+</script>
+</body>
+</html>.Value -replace '\?+', '' <div style="margin-bottom:14px">
+      <div class="flex justify-between items-center">
+        <span style="font-size:13px;font-weight:600">${DIM_LABELS[key] || key}</span>
+        <span style="font-size:12px;color:var(--text-muted)">
+          ${dim.score.toFixed(0)}/100
+          <span class="badge badge-muted" style="margin-left:4px">x${dim.weight}%</span>
+        </span>
+      </div>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill" style="width:${dim.score}%;background:${DIM_COLORS[key]||'var(--accent)'}"></div>
+      </div>
+      <div class="text-muted text-sm" style="margin-top:3px">${escHtml(dim.detail)}</div>
+    </div>`).join('');
+}
+
+function renderFeed(events) {
+  const container = document.getElementById('feed-list');
+  document.getElementById('feed-count').textContent = events.length + ' events';
+
+  if (!events.length) {
+    container.innerHTML = '<p class="text-muted text-sm" style="padding:16px 0">No activity yet. Start using the platform modules to see events here.</p>';
+    return;
+  }
+
+  container.innerHTML = events.map(ev => `
+    <div class="feed-item">
+      <span class="feed-dot ${FEED_COLORS[ev.severity] || 'dot-info'}"></span>
+      <div style="flex:1">
+        <div style="font-size:13.5px">${escHtml(ev.message)}</div>
+        <div class="text-muted text-sm"> <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team Pulse - DevHub</title>
+  <link rel="stylesheet" href="../static/style.css" />
+  <style>
+    /* Score ring */
+    .score-ring-wrap { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .ring-svg { transform:rotate(-90deg); }
+    .ring-bg   { fill:none; stroke:var(--surface-2); stroke-width:10; }
+    .ring-fill { fill:none; stroke-width:10; stroke-linecap:round; transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1); }
+    .score-label { font-size:38px; font-weight:900; margin-top:-8px; }
+    .grade-label { font-size:16px; font-weight:700; letter-spacing:2px; }
+
+    /* Dimension bars */
+    .dim-bar-track { height:7px; background:var(--surface-2); border-radius:99px; overflow:hidden; margin-top:5px; }
+    .dim-bar-fill  { height:100%; border-radius:99px; transition:width 1s ease .2s; }
+
+    /* Feed */
+    .feed-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--border); }
+    .feed-item:last-child { border-bottom:none; }
+    .feed-dot  { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+    .dot-success  { background:var(--success); }
+    .dot-critical { background:var(--danger); }
+    .dot-warning  { background:var(--warning); }
+    .dot-info     { background:var(--accent); }
+
+    /* Health grade colours */
+    .grade-A { color:var(--success); }
+    .grade-B { color:#4ade80; }
+    .grade-C { color:var(--warning); }
+    .grade-D { color:#f97316; }
+    .grade-F { color:var(--danger); }
+
+    .pulse-grid { display:grid; grid-template-columns:280px 1fr; gap:20px; align-items:start; }
+    @media (max-width:700px) { .pulse-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+    <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 5h16M4 9h10M4 13h16M4 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/></svg></div>
+      <div class="logo-text"><strong>DevHub</strong><span>ADE.UA Platform</span></div>
+    </div>
+    <div class="nav-section">
+      <a class="nav-link" href="teams.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Onboarding</a>
+      <a class="nav-link" href="pipeline.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Pipeline</a>
+      <a class="nav-link" href="mindmap.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="3" cy="6" r="2"/><circle cx="21" cy="6" r="2"/><circle cx="3" cy="18" r="2"/><circle cx="21" cy="18" r="2"/><line x1="5" y1="7" x2="10" y2="11"/><line x1="19" y1="7" x2="14" y2="11"/><line x1="5" y1="17" x2="10" y2="13"/><line x1="19" y1="17" x2="14" y2="13"/></svg></span> Mindmap</a>
+      <a class="nav-link" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span> Dashboard</a>
+      <a class="nav-link" href="analyzer.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></span> Analyzer</a>
+      <a class="nav-link" href="debugging.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l1 4H7z"/><path d="M7 6v4a5 5 0 0 0 10 0V6"/><path d="M12 16v4"/><path d="M2 10h4M18 10h4M3 14h4M17 14h4"/></svg></span> Debugging</a>
+      <a class="nav-link" href="review.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span> Senior Review</a>
+      <a class="nav-link" href="testing.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span> Testing</a>
+      <a class="nav-link" href="deployment.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></span> Deployment</a>
+      <a class="nav-link" href="maintenance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span> Maintenance</a>
+      <a class="nav-link active" href="pulse.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Team Pulse</a>
+    </div>
+    <div style="padding:14px 16px;margin-top:auto;border-top:1px solid var(--border);">
+      <a class="btn btn-ghost btn-sm w-full" href="../index.html" style="justify-content:center;gap:6px;"><span class="nav-icon" style="width:14px;height:14px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Home</a>
+    </div>
+  </nav>
+
+  <main class="main-content">
+        <div class="page-header">
+      <div class="page-header-icon violet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="page-header-text">
+        <div class="page-title">Team Pulse</div>
+        <div class="page-sub">Live platform health score across all 10 modules.</div>
+      </div>
+    </div>
+        <button class="btn btn-primary" onclick="loadPulse()">&#8635; Refresh</button>
+      </div>
+    </div>
+
+    <!-- Loading...state -->
+    <div id="pulse-Loading..." class="card mt-16" style="text-align:center;padding:40px">
+      <div class="text-muted">Computing Team Pulse...</div>
+    </div>
+
+    <!-- Main pulse content (hidden until loaded) -->
+    <div id="pulse-content" style="display:none">
+
+      <!-- Score + dimensions -->
+      <div class="pulse-grid mt-16">
+
+        <!-- Ring score -->
+        <div class="card score-ring-wrap" style="padding:32px 20px">
+          <svg class="ring-svg" width="160" height="160" viewBox="0 0 160 160">
+            <circle class="ring-bg" cx="80" cy="80" r="66"/>
+            <circle class="ring-fill" id="ring-fill" cx="80" cy="80" r="66"
+              stroke="#4f8ef7"
+              stroke-dasharray="414.69"
+              stroke-dashoffset="414.69"/>
+          </svg>
+          <div class="score-label" id="score-label">--</div>
+          <div class="grade-label" id="grade-label">--</div>
+          <div class="text-muted text-sm mt-8" id="computed-at"></div>
+        </div>
+
+        <!-- Dimension breakdown -->
+        <div class="card">
+          <div class="card-title">Score Breakdown</div>
+          <div id="dimensions"></div>
+        </div>
+      </div>
+
+      <!-- Activity feed -->
+      <div class="card mt-16">
+        <div class="flex justify-between items-center" style="margin-bottom:12px">
+          <div class="card-title" style="margin:0">Activity Feed</div>
+          <span id="feed-count" class="badge badge-muted"></span>
+        </div>
+        <div id="feed-list"></div>
+      </div>
+
+    </div><!-- end pulse-content -->
+  </main>
+</div>
+
+<script src="../static/app.js"></script>
+<script src="../static/api-client.js"></script>
+<script>
+const CIRCUMFERENCE = 2 * Math.PI * 66; // 414.69
+
+const DIM_COLORS = {
+  pipeline:    '#4f8ef7',
+  quality:     '#2ecc71',
+  team:        '#a78bfa',
+  maintenance: '#f39c12',
+  activity:    '#3498db',
+};
+const DIM_LABELS = {
+  pipeline:    'Pipeline Health',
+  quality:     'Code Quality',
+  team:        'Team Completeness',
+  maintenance: 'Maintenance Compliance',
+  activity:    'Team Activity',
+};
+const FEED_COLORS = {
+  success:  'dot-success',
+  critical: 'dot-critical',
+  warning:  'dot-warning',
+  info:     'dot-info',
+};
+
+async function loadPulse() {
+  document.getElementById('pulse-Loading...style.display = '';
+  document.getElementById('pulse-content').style.display = 'none';
+
+  try {
+    const data = await ApiClient.pulse.get();
+    renderScore(data);
+    renderDimensions(data.dimensions);
+    renderFeed(data.feed || []);
+
+    document.getElementById('pulse-Loading...style.display = 'none';
+    document.getElementById('pulse-content').style.display = '';
+  } catch(e) {
+    document.getElementById('pulse-Loading...innerHTML =
+      `<div class="badge badge-danger">Error Loading...pulse: ${e.message}</div>`;
+  }
+}
+
+function renderScore(data) {
+  const score = data.overall;
+  const grade = data.grade;
+
+  // Animate ring
+  const fill = document.getElementById('ring-fill');
+  const offset = CIRCUMFERENCE - (score / 100) * CIRCUMFERENCE;
+  fill.style.strokeDashoffset = offset;
+
+  // Colour ring by grade
+  const ringColor = score >= 85 ? '#2ecc71' : score >= 70 ? '#4ade80' : score >= 55 ? '#f39c12' : score >= 40 ? '#f97316' : '#e74c3c';
+  fill.style.stroke = ringColor;
+
+  document.getElementById('score-label').textContent = score;
+  document.getElementById('score-label').style.color = ringColor;
+
+  const gradeEl = document.getElementById('grade-label');
+  gradeEl.textContent = 'Grade ' + grade;
+  gradeEl.className = 'grade-label grade-' + grade;
+
+  if (data.computed_at) {
+    const d = new Date(data.computed_at);
+    document.getElementById('computed-at').textContent = 'as of ' + d.toLocaleTimeString();
+  }
+}
+
+function renderDimensions(dims) {
+  const container = document.getElementById('dimensions');
+  container.innerHTML = Object.entries(dims).map(([key, dim]) => `
+    <div style="margin-bottom:14px">
+      <div class="flex justify-between items-center">
+        <span style="font-size:13px;font-weight:600">${DIM_LABELS[key] || key}</span>
+        <span style="font-size:12px;color:var(--text-muted)">
+          ${dim.score.toFixed(0)}/100
+          <span class="badge badge-muted" style="margin-left:4px">x${dim.weight}%</span>
+        </span>
+      </div>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill" style="width:${dim.score}%;background:${DIM_COLORS[key]||'var(--accent)'}"></div>
+      </div>
+      <div class="text-muted text-sm" style="margin-top:3px">${escHtml(dim.detail)}</div>
+    </div>`).join('');
+}
+
+function renderFeed(events) {
+  const container = document.getElementById('feed-list');
+  document.getElementById('feed-count').textContent = events.length + ' events';
+
+  if (!events.length) {
+    container.innerHTML = '<p class="text-muted text-sm" style="padding:16px 0">No activity yet. Start using the platform modules to see events here.</p>';
+    return;
+  }
+
+  container.innerHTML = events.map(ev => `
+    <div class="feed-item">
+      <span class="feed-dot ${FEED_COLORS[ev.severity] || 'dot-info'}"></span>
+      <div style="flex:1">
+        <div style="font-size:13.5px">${escHtml(ev.message)}</div>
+        <div class="text-muted text-sm">${ev.type} &middot; ${ev.timestamp ? timeAgo(ev.timestamp) : 'just now'}</div>
+      </div>
+    </div>`).join('');
+}
+
+function timeAgo(isoStr) {
+  const diff = Date.now() - new Date(isoStr).getTime();
+  const mins  = Math.floor(diff / 60000);
+  const hours = Math.floor(mins / 60);
+  const days  = Math.floor(hours / 24);
+  if (days > 0)  return days  + 'd ago';
+  if (hours > 0) return hours + 'h ago';
+  if (mins > 0)  return mins  + 'm ago';
+  return 'just now';
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Load on page open and auto-refresh every 30 seconds
+loadPulse();
+setInterval(loadPulse, 30000);
+</script>
+</body>
+</html>.Value -replace '\?+', '' </div>
       </div>
     </div>`).join('');
 }
